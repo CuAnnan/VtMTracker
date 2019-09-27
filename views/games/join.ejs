@@ -1,0 +1,25 @@
+<%- include ../inc/header %>
+    <h1>Join <%- game.name %></h1>
+    <% if (characters.length){ %>
+        <form method="post" action="/games/join/<%- game.reference%>">
+            <div class="row">
+                <label for="characterReference" class="col-sm-2 col-form-label">Character:</label>
+                <div class="col-sm-10 input-group">
+                    <select class="form-control" id="characterReference" name="characterReference" required="required">
+                        <%for(let character of characters){%>
+                            <option value="<%- character.reference%>"><%- character.name%> - <%- character.clan%></option>
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-2"></div>
+                <div class="col">
+                    <button class="btn btn-primary" type="submit">Join game</button>
+                </div>
+            </div>
+        </form>
+    <%} else {%>
+        You have no stored characters. Why not head to your <a href="/characters/">Characters section</a> and create one.
+    <%}%>
+<%- include ../inc/footer.ejs%>

@@ -1,0 +1,69 @@
+<%- include ../inc/header.ejs %>
+<form method="post" action="/users/register">
+
+    <% if (errors.email){ %>
+        <div class="row alert alert-danger"><div class="col">
+            <%= errors.email %>
+        </div></div>
+    <% } %>
+    <div class="form-group row">
+        <label for="email" class="col-sm-2 col-form-label">Email</label>
+        <div class="col-sm-10 input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-at"></i>
+                </div>
+            </div>
+            <input class="form-control" type="email" id="email" name="email" required="required" value="<%= form.email?form.email:''%>"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="displayName" class="col-sm-2 col-form-label">Display name</label>
+        <div class="col-sm-10 input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            <input class="form-control" type="text" id="displayName" name="displayName" required="required" value="<%= form.displayName?form.displayName:''%>"/>
+        </div>
+    </div>
+    <% if(errors.password){ %>
+        <div class="row alert alert-danger"><div class="col">
+            <%= errors.password %>
+        </div></div>
+    <%}%>
+    <div class="form-group row">
+        <label for="password" class="col-sm-2 col-form-label">Password</label>
+        <div class="col-sm-10 input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-unlock-alt"></i>
+                </div>
+            </div>
+            <input class="form-control" type="password" id="password" name="password" required="required"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label for="password-confirm" class="col-sm-2 col-form-label">Confirm Password</label>
+        <div class="col-sm-10 input-group">
+            <div class="input-group-prepend">
+                <div class="input-group-text">
+                    <i class="fas fa-unlock"></i>
+                </div>
+            </div>
+            <input class="form-control" type="password" id="password-confirm" name="password-confirm" required="required"/>
+        </div>
+    </div>
+    <div class="form-group row">
+        <div class="col-sm-2"></div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                Register
+            </button>
+        </div>
+    </div>
+</form>
+
+<%- include ../inc/footer.ejs %>

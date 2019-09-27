@@ -1,0 +1,114 @@
+<%- include ../inc/header %>
+<link rel="stylesheet" href="/css/main.css"/>
+
+<script type="text/javascript">
+    var rawCharacterJSON = <%- JSON.stringify(character.toJSON()) %>;
+</script>
+    <!-- Unimportant stuff -->
+    <div class="row">
+        <div class="col">
+            <div class="row">
+                <div class="col-3">Name:</div>
+                <div class="col"><%= character.name %>#<%= character.reference %></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Clan:</div>
+                <div class="col"><%= locals.sessionUser.displayName%>#<%= locals.sessionUser.id%></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Chronicle:</div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col-3">Nature:</div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Demeanor:</div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Concept</div>
+                <div class="col"></div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col-3">Clan:</div>
+                <div class="col"><%= character.clan%></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Generation:</div>
+                <div class="col"></div>
+            </div>
+            <div class="row">
+                <div class="col-3">Sire:</div>
+                <div class="col"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Attributes -->
+    <div class="row"><div class="col text-center">
+        <hr class="hr-text hr-large" data-content="Attributes"/>
+    </div></div>
+    <div class="row">
+        <% for(let useGroup in character.attributes) {%>
+        <div class="col">
+            <div class="row"><div class="col text-center ruled">
+                <hr class="hr-text hr-medium" data-content="<%= useGroup %>"/>
+            </div></div>
+            <% for (let attribute of character.attributes[useGroup]){ %>
+                <div class="row" data-attribute-name="<%= attribute.name%>">
+                    <div class="col-5"><%= attribute.name%></div>
+                    <div class="col" data-purchasable="<%= attribute.name.toLowerCase() %>">
+                        <% for (let level = 0; level < attribute.level; level++) { %>
+                            <span class="attribute-level simplePurchasable" data-level="<%= level + 1%>">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                        <% } %>
+                        <% for(let level = attribute.level; level < 9; level++){%>
+                            <span class="attribute-level simplePurchasable" data-level="<%= level + 1%>">
+                                <i class="far fa-circle"></i>
+                            </span>
+                        <% }%>
+                    </div>
+                </div>
+            <% }%>
+        </div>
+        <% } %>
+    </div>
+    <!-- Abilities -->
+    <div class="row"><div class="col text-center">
+        <hr class="hr-text hr-large" data-content="Abilities"/>
+    </div></div>
+    <div class="row">
+        <% for(let useGroup in character.abilities){%>
+            <div class="col">
+                <div class="row"><div class="col text-center ruled">
+                        <hr class="hr-text hr-medium" data-content="<%= useGroup %>"/>
+                </div></div>
+                <% for(let ability of character.abilities[useGroup]){%>
+                    <div class="row">
+                        <div class="col-5"><%= ability.name %></div>
+                        <div class="col" data-purchasable="<%= ability.name.toLowerCase() %>">
+                            <% for (let level = 0; level < ability.level; level++) { %>
+                                <span class="ability-level simplePurchasable" data-level="<%= level + 1%>">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                            <% } %>
+                            <% for(let level = ability.level; level < 9; level++){%>
+                                <span class="ability-level simplePurchasable" data-level="<%= level + 1%>">
+                                <i class="far fa-circle"></i>
+                            </span>
+                            <% }%>
+                        </div>
+                    </div>
+                <%}%>
+            </div>
+        <% }%>
+    </div>
+<script type="text/javascript" src="/js/frontEndBuild.js"></script>
+
+<%- include ../inc/footer %>

@@ -1,0 +1,61 @@
+<%- include ../inc/header.ejs %>
+<h1>Characters</h1>
+<ul>
+<% for(let character of characters) { %>
+    <li><%= character.name%></li>
+<% } %>
+</ul>
+<button id="new-character-button" class="btn btn-primary"><i class="fas fa-plus"></i>New Character</button>
+
+<script type="text/javascript" src="/js/characters.js"></script>
+<div class="modal" tabindex="-1" role="dialog" id="newCharacterModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Character</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group">
+                    <label for="name" class="col-sm-2 col-form-label">Name:</label>
+                    <div class="col-sm-10 input-group">
+                        <input class="form-control" type="text" id="name" name="name" required="required"/>
+                    </div>
+                </div>
+                <div class="row form-group">
+                    <label for="clan" class="col-sm-2 col-form-label">Clan</label>
+                    <div class="col-sm-10 input-group">
+                        <select id="clan" name="clan" required="required">
+                            <option value="">-Choose a clan-</option>
+                            <optgroup label="High Clans">
+                                <option>Brujah</option>
+                                <option>Cappadocian</option>
+                                <option>Lasombra</option>
+                                <option>Toreador</option>
+                                <option>Tzimisce</option>
+                                <option>Ventrue</option>
+                            </optgroup>
+                            <optgroup label="Low Clans">
+                                <option>Assamites</option>
+                                <option>Followers of Set</option>
+                                <option>Gangrel</option>
+                                <option>Malkavian</option>
+                                <option>Nosferatu</option>
+                                <option>Ravnos</option>
+                                <option>Tremere</option>
+                            </optgroup>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="characterCreateButton">Create</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include ../inc/footer.ejs %>

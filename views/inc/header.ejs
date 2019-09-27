@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>VtM Character Sheet</title>
+    <link rel="stylesheet" href="/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/all.css"/>
+    <script type="text/javascript" src="/js/jquery.3.4.1.min.js"></script>
+    <script type="text/javascript" src="/js/popper.js"></script>
+    <script type="text/javascript" src="/js/bootstrap.js"></script>
+    <script type="text/javascript" src="/js/all.js"></script>
+    <script type="text/javascript" src="/js/global.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/characters/">Characters</a>
+        <a class="nav-link" href="/games/">Games</a>
+        <a class="nav-link" href="/users/">User maintenance</a>
+        <a style="display:<%= locals.sessionUser?'none':'inline'%>" class="nav-link loginLink" id="loginLink" href="#">Login</a>
+        <a style="display:<%= locals.sessionUser?'inline':'none'%>" class="nav-link loginLink" id="logoutLink" href="#">Logout (<span id="logged-in-username"><%if(locals.sessionUser){%><%= locals.sessionUser.displayName%>#<%= locals.sessionUser.id%><% }%></span>)</a>
+    </nav>
+    <div class="container">

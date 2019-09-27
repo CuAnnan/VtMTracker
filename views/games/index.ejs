@@ -1,0 +1,51 @@
+<%- include ../inc/header %>
+<h1>Games</h1>
+
+<div class="row">
+    <div class="col">
+        <h2>Games Run</h2>
+        <div class="row">
+            <button class="btn btn-primary" id="newGameButton">New Game</button>
+        </div>
+        <ul>
+        <% for(let game of gamesRun){%>
+            <li><a href="/games/show/<%- game.reference %>"><%- game.name%></a></li>
+        <% } %>
+        </ul>
+    </div>
+    <div class="col">
+        <h2>Games played</h2>
+        <ul>
+            <%for(let game of gamesPlayed){%>
+                <li><a href="/games/show/<%- game.reference %>"><%- game.name%></a></li>
+            <%}%>
+        </ul>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="newGameModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Game</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group">
+                    <label for="gameName" class="col-sm-3 col-form-label">Game name:</label>
+                    <div class="col input-group">
+                        <input class="form-control" type="text" id="gameName" name="gameName" required="required"/>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="gameCreateButton">Create</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script types="text/javascript" src="/js/games.js"></script>
+<%- include ../inc/footer %>

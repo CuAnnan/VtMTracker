@@ -1,0 +1,52 @@
+<%- include ../inc/header %>
+<h1 class="row"><%- game.name %></h1>
+<div class="row">
+    <div class="col"><a href="/games/invite/<%- game.reference%>">Game invite link.</a></div>
+</div>
+<h2>Players</h2>
+
+<div class="row">
+    <div class="col-3">
+        <h2 class="row">Players</h2>
+        <% for(let player of game.players){%>
+            <div class="row" data-player-reference="<%- player.reference%>">
+                <div class="col"><%- player.displayName %></div>
+                <div class="col-4">
+                    <% if(
+                            locals.sessionUser.reference &&
+                            (game.owner.reference === locals.sessionUser.reference || player.reference === locals.sessionUser.reference)
+                    ){%>
+                    <button class="btn btn-sm btn-warning playerRemoveButton" data-game-reference="<%- game.reference %>" data-player-reference="<%- player.reference%>">Remove</button>
+                    <%}%>
+                </div>
+            </div>
+        <%}%>
+    </div>
+    <div class="col">
+        <h2 class="row">Characters</h2>
+        <div class="row" style="font-weight:bold">
+            <div class="col">Character</div>
+            <div class="col">Clan</div>
+            <div class="col">Player</div>
+            <div class="col"></div>
+        </div>
+        <% for(let character of game.characters){ %>
+            <div class="row" data-player-reference="<%- character.owner.reference%>">
+                <div class="col"><%- character.name %></div>
+                <div class="col"><%- character.clan %></div>
+                <div class="col"><%- character.owner.displayName %></div>
+                <div class="col">
+                    <% if(
+                        locals.sessionUser.reference &&
+                        (game.owner.reference === locals.sessionUser.reference || character.owner.reference === locals.sessionUser.reference)
+                    ){%>
+                    <a class="btn btn-sm btn-primary" target="_blank" href="/characters/load/<%- character.reference%>">View</a>
+                    <button class="btn btn-sm btn-warning removeCharacterButton" data-game-reference="<%- game.reference %>" data-character-reference="<%- character.reference%>">Remove</button>
+                    <% }%>
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+<script type="text/javascript" src="/js/gameManagement.js"></script>
+<%- include ../inc/footer %>
