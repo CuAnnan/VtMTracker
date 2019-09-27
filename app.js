@@ -25,7 +25,7 @@ console.log("Establishing Mongo Session Store");
 let store = new MongoDBStore({
   uri: conf.sessionStore.getURI(),
   databaseName: 'connect_mongodb_sessions',
-  collection:'nodesaken_sessions'
+  collection:'vtm_sessions'
 });
 console.log("Mongo Session Store Established");
 
