@@ -49,7 +49,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-console.log("Hoisting Mongoose");
+debug("Hoisting Mongoose");
 
 mongoose.Promise = global.Promise;
 mongoose.connect(conf.mongoose.getURI(), {useNewUrlParser:true, useFindAndModify: false, useUnifiedTopology: true})
@@ -62,7 +62,7 @@ mongoose.connect(conf.mongoose.getURI(), {useNewUrlParser:true, useFindAndModify
       debug(err);
     }
 );
-console.log("Mongoose hoisted");
+debug("Mongoose hoisted");
 
 global.appRoot = path.resolve(__dirname);
 

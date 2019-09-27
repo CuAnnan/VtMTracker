@@ -14,6 +14,7 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "express-session": "^1.16.2",
+    "extensiblediscordbot": "git+https://github.com/CuAnnan/DiscordBot.git",
     "http-errors": "~1.6.3",
     "mongoose": "^5.7.1",
     "morgan": "~1.9.1",
