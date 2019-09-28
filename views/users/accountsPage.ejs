@@ -1,2 +1,18 @@
 <%- include ../inc/header %>
+    <h1 class="row">Account management</h1>
+    <h2>Identification request command</h2>
+    <pre>!identify <%- user.reference %></pre>
+    <h2>Identification requests</h2>
+    <% for(let identityRequest of identityRequests){ %>
+        <div class="row">
+            <div class="col">
+                <%- identityRequest.discordUserTag%>
+            </div>
+            <div class="col" data-request-id="<%- identityRequest.discordUserId%>">
+                <button class="btn btn-sm btn-primary approveIDButton">Approve</button>
+                <button class="btn btn-sm btn-warning rejectIDButton">Reject</button>
+            </div>
+        </div>
+    <% } %>
+<script type="text/javascript" src="/js/accountsPage.js"></script>
 <%- include ../inc/footer %>

@@ -6,7 +6,8 @@ let mongoose = require('mongoose'),
         displayName:{type:String,unique:true,required:true,trim:true},
         passwordHash:{type:String, required:true, trim:true},
         passwordSalt:{type:String, required:true, trim:true},
-        created:{type:String, default:Date.now}
+        created:{type:String, default:Date.now},
+        discordUserReferences:[{type:mongoose.Schema.Types.ObjectId, ref:'DiscordUser'}]
     });
 
 module.exports = mongoose.model('User', User);

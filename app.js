@@ -8,11 +8,17 @@ const	createError = require('http-errors'),
         MongoDBStore = require('connect-mongodb-session')(session),
         mongoose = require('mongoose'),
         conf = require('./conf'),
-        app = express()
+        app = express();
+require('./DiscordBot/hoist')
+    .hoist(conf)
+    .then(()=>{
+        console.log('Bot hoisted');
+    });
+
     /**
      * Routes
      */
-        indexRouter = require('./routes/index'),
+const        indexRouter = require('./routes/index'),
         userRouter = require('./routes/users'),
         gameRouter = require('./routes/games'),
         characterRouter = require('./routes/characters')
@@ -63,6 +69,7 @@ mongoose.connect(conf.mongoose.getURI(), {useNewUrlParser:true, useFindAndModify
     }
 );
 debug("Mongoose hoisted");
+
 
 global.appRoot = path.resolve(__dirname);
 

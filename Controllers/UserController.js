@@ -1,13 +1,41 @@
 const   Controller = require('./Controller'),
-        User = require('../schemas/User'),
+        DiscordIdentityController = require('./DiscordIdentityController'),
+        DiscordIdentityRequest = require('../schemas/DiscordIdentityRequest'),
+        {UserSchema, DiscordIdentityRequestSchema, DiscordUserSchema} = require('../schemas/AllSchemas'),
         bcrypt = require('bcryptjs'),
+        botFactory = require('../DiscordBot/ServerBot'),
         validators = require('../validators');
+
 
 class UserController extends Controller
 {
+    async requestFollowUpAction(req, res)
+    {
+        let loggedInUser = await this.getLoggedInUser(req),
+            reference = req.body.requestReference,
+            discordUser = await DiscordUserSchema.findOne({discordUserId:reference}),
+            requestSet = await DiscordIdentityRequestSchema.findOne({requests:discordUser}),
+            bot = botFactory.getStaticInstance(),
+            approve = req.body.approve;
+        requestSet.requests.pull(discordUser);
+        requestSet.save();
+        if(approve === 'true')
+        {
+            loggedInUser.discordUserReferences.addToSet(discordUser);
+            loggedInUser.save();
+            bot.messageUser(discordUser, 'You have been authenticated on this account');
+        }
+        else
+        {
+            bot.messageUser(discordUser, 'You have been denied access to that account');
+        }
+        await res.json({success:true});
+        return null;
+    }
+
     async indexAction(req, res)
     {
-        if(req.session.user)
+        if(req.session.user.id)
         {
             await this.accountAction(req, res);
         }
@@ -20,8 +48,13 @@ class UserController extends Controller
 
     async accountAction(req, res)
     {
-        let user = this.getLoggedInUser(req);
-        res.render('users/accountsPage', {user:user});
+        let user = await this.getLoggedInUser(req),
+            identityRequestsForUser = await DiscordIdentityRequest
+                .findOne({user:user})
+                .populate('requests'),
+            requests = identityRequestsForUser?identityRequestsForUser.requests:[];
+
+        res.render('users/accountsPage', {user:user, identityRequests:requests});
         return null;
     }
 
@@ -47,7 +80,7 @@ class UserController extends Controller
 
     async loginAction(req, res)
     {
-        let user = await User.findOne({email:req.body.email}),
+        let user = await UserSchema.findOne({email:req.body.email}),
             errorMessage = {error: 'Could not find a user with matching email and password', success: false};
         if(!user)
         {
@@ -108,7 +141,7 @@ class UserController extends Controller
                 passwordHash:hash.hash,
                 passwordSalt:hash.salt
             };
-            await User.create(user);
+            await UserSchema.create(user);
             res.render('users/accountCreated', {user:user});
         }
         return null;
