@@ -35,7 +35,8 @@ class UserController extends Controller
 
     async indexAction(req, res)
     {
-        if(req.session.user.id)
+        let user = await this.getLoggedInUser(req);
+        if(user)
         {
             await this.accountAction(req, res);
         }
