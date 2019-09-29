@@ -4,7 +4,9 @@ let mongoose = require('mongoose'),
         reference:{type:String, default:shortid.generate},
         owner: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         name:{type:String},
-        discordChannelId:{type:String},
+        discordGuildId:{type:String},
+        discordGuildName:{type:String},
+        discordGuildLinks:[{type:String}],
         characters: [{type: mongoose.Schema.Types.ObjectId, ref:'Character'}],
         players:[{type:mongoose.Schema.Types.ObjectId, ref:'User'}]
     });

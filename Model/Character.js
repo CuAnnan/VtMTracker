@@ -13,6 +13,8 @@ const   Attribute = require('./Attribute'),
         abilityPenalties = {
             Talents:0,
             Skills:1,
+            // an unskilled knowledge can't be rolled without ST approval so just stick the diff penalty
+            // to ten and the die roller will know it can't be don
             Knowledges:10
         };
 

@@ -4,7 +4,7 @@ let package = {
     DiscordIdentityRequestSchema : require('./DiscordIdentityRequest'),
     DiscordUserSchema : require('./DiscordUser'),
     GameSchema : require('./Game'),
-    UserSchema : require('./User')
+    UserSchema : require('./User'),
 };
 
 module.exports = package;

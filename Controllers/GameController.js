@@ -112,6 +112,23 @@ class GameController extends Controller
         }
         return null;
     }
+
+    async linkServer(gameReference, discordServer)
+    {
+        let game = await GameSchema.findOne({reference:gameReference});
+        game.discordGuildId = discordServer.id;
+        game.discordGuildName = discordServer.name;
+        let invites = Array.from(await discordServer.fetchInvites());
+        for(let invite of invites)
+        {
+            if(!invite.temporary)
+            {
+                game.discordGuildLinks.addToSet(invite[0]);
+            }
+        }
+        game.save();
+
+    }
 }
 
 module.exports = new GameController();

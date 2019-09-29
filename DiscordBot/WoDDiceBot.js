@@ -1,5 +1,5 @@
 const   DiscordBot = require('extensiblediscordbot'),
-        Action = require('./DiceRoller').Action;
+        {Action} = require('./DiceRoller');
 
 class WoDDiceBot extends DiscordBot
 {
@@ -46,8 +46,7 @@ class WoDDiceBot extends DiscordBot
 
     simpleRoll(commandParts, message, comment)
     {
-        let messageParts = message.content.split('--'),
-            messageText = message.content.toLowerCase(),
+        let messageText = message.content.toLowerCase(),
             poolMatch = messageText.match(/\s(\d+)\s?/),
             {difficulty, specialty} = this.preParseRoll(messageText),
             pool = 5;

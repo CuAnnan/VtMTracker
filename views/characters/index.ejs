@@ -1,10 +1,21 @@
 <%- include ../inc/header.ejs %>
-<h1>Characters</h1>
-<ul>
+<h1 class="row">Characters</h1>
+
+<div class="row" style="font-weight:bold">
+    <div class="col">Character link</div>
+    <div class="col">Checkout command</div>
+</div>
 <% for(let character of characters) { %>
-    <li><%= character.name%></li>
+    <div class="row">
+        <div class="col">
+            <a href="/characters/view/<%- character.reference%>"><%= character.name%></a>
+        </div>
+        <div class="col">
+            <pre>!checkout <%- character.reference %></pre>
+        </div>
+    </div>
 <% } %>
-</ul>
+
 <button id="new-character-button" class="btn btn-primary"><i class="fas fa-plus"></i>New Character</button>
 
 <script type="text/javascript" src="/js/characters.js"></script>

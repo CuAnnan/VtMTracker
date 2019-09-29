@@ -1,7 +1,6 @@
 const   Character = require('../Model/Character'),
         Controller = require('./Controller'),
-        CharacterSchema = require('../schemas/Character'),
-        CharacterPermissions = require('../schemas/CharacterPermissions');
+        {GameSchema, DiscordUserSchema, UserSchema, CharacterSchema, CharacterPermissionsSchema} = require('../schemas/AllSchemas');
 
 class CharacterController extends Controller
 {
@@ -24,7 +23,7 @@ class CharacterController extends Controller
                 owner: user,
                 name: req.body.name
             });
-            CharacterPermissions.create({
+            CharacterPermissionsSchema.create({
                 user:user,
                 character:characterEntity
             });
@@ -71,7 +70,7 @@ class CharacterController extends Controller
     {
         let user = await this.getLoggedInUser(req),
             characterEntity = await CharacterSchema.findOne({reference: characterReference}),
-            permissionCheck = await CharacterPermissions.findOne({user:user, character:characterEntity});
+            permissionCheck = await CharacterPermissionsSchema.findOne({user:user, character:characterEntity});
         characterEntity.json.reference = characterEntity.reference;
         if(permissionCheck)
         {
@@ -82,6 +81,33 @@ class CharacterController extends Controller
             return Character.fromJSON(characterEntity.json);
         }
         throw new Error('No matching character was found');
+    }
+
+    async verifyDiscordPermissionsAndReturnCharacter(characterReference, discordUser)
+    {
+        let localDiscordUser = await DiscordUserSchema.findOne({discordUserId:discordUser.id}),
+            user = await UserSchema.findOne({discordUserReferences:localDiscordUser}),
+            characterEntity = await CharacterSchema.findOne({reference:characterReference}),
+            permissionCheck = await CharacterPermissionsSchema.findOne({user:user, character:characterEntity});
+        return {
+            hasPermission:permissionCheck?true:false,
+            characterEntity:permissionCheck?characterEntity:null,
+            localDiscordUser:localDiscordUser
+        }
+    }
+
+    async getMostRecentCharacterForGuild(discordMessage)
+    {
+        let localDiscordUser = await DiscordUserSchema.findOne({discordUserId:discordMessage.author.id}),
+            user = await UserSchema.findOne({discordUserReferences:localDiscordUser}),
+            game = await GameSchema.findOne({discordGuildId:discordMessage.guild.id}).populate('characters'),
+            character = game.characters.find(character=> character.owner._id.equals(user._id));
+
+        if(character)
+        {
+            return Character.fromJSON(character.json);
+        }
+        return null;
     }
 }
 
