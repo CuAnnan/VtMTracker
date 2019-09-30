@@ -24,23 +24,31 @@ class WoDDiceBot extends DiscordBot
 
     displayHelpText(commandParts, message)
     {
-        message.reply([
-            "`!roll <n> [diff-<d>] [spec]`",
+        message.reply(this.helpText);
+    }
+
+    get helpText()
+    {
+        return [
+            "`!roll <n> [diff-<d>] [spec] [-wp] [-- comment]`",
             "    `!roll 5 would` roll five dice at the standard difficulty of 6",
             "    `!roll 6 diff-7` would roll six dice but only consider 7s a success",
             "    `!roll 7 spec` would roll 7 dice and consider tens two successes",
-            "    `!roll 7 diff-7 -- rolling strength + brawl` would treat the text after the double dashes as a comment which is for the sake of posterity"
-        ]);
+            "    `!roll 7 diff-7 -- rolling strength + brawl` would treat the text after the double dashes as a comment which is for the sake of posterity",
+            "    `!roll 5 diff-5 -wp -- rolls five dice, spending one willpower`"
+        ];
     }
 
     preParseRoll(messageText)
     {
         let difficulty = 6,
+            willpower = messageText.match(/\-wp/),
             difficultyMatch = messageText.match(/diff\-(\d+)/),
             specialty = messageText.indexOf('spec')>-1;
         return {
             difficulty:difficultyMatch?difficultyMatch:difficulty,
-            specialty:specialty
+            specialty:specialty,
+            willpower:willpower
         }
     }
 
@@ -48,7 +56,7 @@ class WoDDiceBot extends DiscordBot
     {
         let messageText = message.content.toLowerCase(),
             poolMatch = messageText.match(/\s(\d+)\s?/),
-            {difficulty, specialty} = this.preParseRoll(messageText),
+            {difficulty, specialty, willpower} = this.preParseRoll(messageText),
             pool = 5;
 
         if(poolMatch)
@@ -56,7 +64,7 @@ class WoDDiceBot extends DiscordBot
             pool = parseInt(poolMatch[1]);
         }
 
-        let action = new Action(pool, difficulty, specialty);
+        let action = new Action(pool, difficulty, specialty, willpower);
         let results = action.getResults();
         this.displayResults(message, results, comment);
     }
@@ -67,6 +75,14 @@ class WoDDiceBot extends DiscordBot
         if(comment)
         {
             response.push(`Comment provided: ${comment}`);
+        }
+        if(results.poolFactors)
+        {
+            response.push(`Pool consisted of ${results.poolFactors.join(', ')}`);
+        }
+        if(results.willpower)
+        {
+            response.push('You used willpower');
         }
         if(results.specialty)
         {

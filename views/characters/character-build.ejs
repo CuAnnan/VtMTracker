@@ -12,7 +12,7 @@
                 <div class="col"><%= character.name %>#<%= character.reference %></div>
             </div>
             <div class="row">
-                <div class="col-3">Clan:</div>
+                <div class="col-3">Player:</div>
                 <div class="col"><%= locals.sessionUser.displayName%>#<%= locals.sessionUser.id%></div>
             </div>
             <div class="row">
@@ -95,19 +95,182 @@
                         <div class="col" data-purchasable="<%= ability.name.toLowerCase() %>">
                             <% for (let level = 0; level < ability.level; level++) { %>
                                 <span class="ability-level simplePurchasable" data-level="<%= level + 1%>">
-                                <i class="fas fa-circle"></i>
-                            </span>
+                                    <i class="fas fa-circle"></i>
+                                </span>
                             <% } %>
                             <% for(let level = ability.level; level < 9; level++){%>
                                 <span class="ability-level simplePurchasable" data-level="<%= level + 1%>">
-                                <i class="far fa-circle"></i>
-                            </span>
+                                    <i class="far fa-circle"></i>
+                                </span>
                             <% }%>
                         </div>
                     </div>
                 <%}%>
             </div>
         <% }%>
+    </div>
+    <!-- advantages-->
+    <div class="row"><div class="col text-center">
+        <hr class="hr-text hr-large" data-content="Advantages"/>
+    </div></div>
+    <div class="row">
+        <div class="col">
+            <hr class="hr-text hr-medium" data-content="Disciplines"/>
+        </div>
+        <div class="col">
+            <hr class="hr-text hr-medium" data-content="Backgrounds"/>
+        </div>
+        <div class="col">
+            <hr class="hr-text hr-medium" data-content="Virtues">
+            <div class="row">
+                <div class="col" id="virtue1Name">
+                    <% if(character.road){ %>
+                        <%- character.road.virtue1.name %>
+                    <%}else{%>
+                        Conscience/Conviction
+                    <%}%>
+                </div>
+                <div class="col col-5" data-purchasable="virtue1">
+                    <% if(character.road){%>
+                        <%for(let i = 0; i < character.road.virtue1.level; i++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                        <%}%>
+                        <%for(let i = character.road.virtue1.level; i < 5; i++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                                <i class="far fa-circle"></i>
+                            </span>
+                        <%}%>
+                        <%}else{%>
+                        <%for(let i = 1; i <= 5; i++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= i %>">
+                                <i class="far fa-circle"></i>
+                            </span>
+                        <%}%>
+                    <%}%>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col" id="virtue2Name">
+                    <% if(character.road){%>
+                        <%- character.road.virtue2.name %>
+                    <%} else {%>
+                        Self-Control/Instinct
+                    <%}%>
+                </div>
+                <div class="col col-5" data-purchasable="virtue2">
+                    <% if(character.road){%>
+                        <%for(let i = 0; i < character.road.virtue2.level; i++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                                <i class="fas fa-circle"></i>
+                            </span>
+                        <%}%>
+                        <%for(let i = character.road.virtue2.level; i < 5; i++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                                <i class="far fa-circle"></i>
+                            </span>
+                        <%}%>
+                    <%}else{%>
+                        <%for(let i = 1; i <= 5; i++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= i %>">
+                                <i class="far fa-circle"></i>
+                            </span>
+                        <%}%>
+                    <%}%>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">Courage</div>
+                <div class="col col-5" data-purchasable="courage">
+                    <%for(let i = 0; i < character.courage.level; i++){%>
+                        <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                            <i class="fas fa-circle"></i>
+                        </span>
+                    <%}%>
+                    <%for(let i = character.courage.level; i < 5; i++){%>
+                        <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                            <i class="far fa-circle"></i>
+                        </span>
+                    <%}%>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr/>
+    <div class="row">
+        <div class="col">
+            <hr class="hr-text hr-medium" data-content="Other Traits"/>
+        </div>
+        <div class="col">
+            <hr class="hr-text hr-medium" data-content="Road"/>
+            <div class="row">
+                <div class="col">Road:</div>
+                <div class="col">
+                    <select id="roadsSelect">
+                        <option value="">Choose one</option>
+                        <%for(let road of roads){%>
+                            <option value="<%- road[0] %>"<%- (character.road && road[0] === character.road.name)?' selected="selected"':''%>><%- road[0]%></option>
+                        <%}%>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center" data-purchasable="road">
+                    <%for(let i = 0; i < character.road.level; i++){%>
+                        <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                            <i class="fas fa-circle"></i>
+                        </span>
+                    <%}%>
+                    <%for(let i = character.road.level; i < 10; i++){%>
+                        <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                            <i class="far fa-circle"></i>
+                        </span>
+                    <%}%>
+                </div>
+            </div>
+            <hr class="hr-text hr-medium" data-content="Willpower"/>
+            <div class="row">
+                <div class="col text-center" data-purchasable="willpower">
+                    <%for(let i = 0; i < character.willpower.level; i++){%>
+                    <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                        <i class="fas fa-circle"></i>
+                    </span>
+                    <%}%>
+                    <%for(let i = character.willpower.level; i < 10; i++){%>
+                    <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                        <i class="far fa-circle"></i>
+                    </span>
+                    <%}%>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center" data-purchasable="willpower" id="willpowerContainer">
+                    <%for(let i = 0; i < character.willpower.level; i++){%>
+                    <span><i class="far fa-square"></i></span>
+                    <%}%>
+                    <%for(let i = character.willpower.level; i < 10; i++){%>
+                    <span><i class="fas fa-square"></i></span>
+                    <%}%>
+                </div>
+            </div>
+            <hr class="hr-text hr-medium" data-content="Blood Pool"/>
+            <div class="row"><div class="col text-center" data-purchasable="bloodpool" data-full-class-name="far fa-square" data-empty-class-name="fas fa-square">
+                <%for(let i = 0; i < 4; i++){%>
+                    <div>
+                        <%for(let j = 0; j < 10; j++){%>
+                            <span class="ability-level simplePurchasable" data-level="<%= j + 1 + (i * 10)%>">
+                                <i class="fas fa-square"></i>
+                            </span>
+                        <%}%>
+                    </div>
+                <%}%>
+            </div></div>
+        </div>
+        <div class="col">
+
+
+        </div>
     </div>
 <script type="text/javascript" src="/js/frontEndBuild.js"></script>
 

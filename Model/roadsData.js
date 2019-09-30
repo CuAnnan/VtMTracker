@@ -1,0 +1,30 @@
+let roads = [
+    ['Beast', 'Conviction', 'Instinct', 'Menace'],
+    ['Hunter', 'Conviction', 'Instinct', 'Menace'],
+    ['Journeys', 'Conviction', 'Self-Control', 'Menace'],
+    ['Liberation', 'Conviction', 'Instinct', 'Menace'],
+    ['Heaven', 'Conscience', 'Self-Control', 'Holiness'],
+    ['Christ', 'Conscience', 'Self-Control', 'Holiness'],
+    ['Life', 'Conscience', 'Self-Control', 'Holiness'],
+    ['Humanity', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Breath', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Community', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Illumination', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Kings', 'Conviction', 'Self-Control', 'Command'],
+    ['Chivalry', 'Conscience', 'Self-Control', 'Command'],
+    ['Devaraja', 'Conviction', 'Self-Control', 'Command'],
+    ['Daena', 'Conviction', 'Self-Control', 'Command'],
+    ['Lilith', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Thorns', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Veils', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Making', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Metamorphosis', 'Conviction', 'Instinct', 'Inhumanity'],
+    ['Sin', 'Conviction', 'Instinct', 'Temptation'],
+    ['Pleasure', 'Conviction', 'Instinct', 'Temptation'],
+    ['Devil', 'Conviction', 'Instinct', 'Temptation'],
+    ['Screams', 'Conviction', 'Instinct', 'Temptation'],
+    ['Bones', 'Conviction', 'Self-Control', 'Silence'],
+    ['Yasa', 'Conviction', 'Self-Control', 'Trust']
+];
+
+module.exports = roads;

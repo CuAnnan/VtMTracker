@@ -53,3 +53,9 @@ h2, h3
 {
     cursor:pointer;
 }
+
+#bloodPoolContainer
+{
+    display:grid;
+    grid-template-columns: repeat(10, 1fr);
+}

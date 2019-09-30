@@ -9,6 +9,9 @@ let instancedBot = null;
 class GuildNotAvailableError extends Error{}
 const cache = new ObjectCache();
 
+/**
+ * This extension of the bot is for integration with the webserver
+ */
 class ServerBot extends WoDDiceBot
 {
     static instantiateStaticBot(conf)
@@ -52,7 +55,6 @@ class ServerBot extends WoDDiceBot
         {
             character = await CharacterController.getMostRecentCharacterForGuild(message);
             cache.put(message.author.id, character);
-            console.log(character);
         }
 
         if(character)
@@ -69,7 +71,7 @@ class ServerBot extends WoDDiceBot
     async rollForCharacter(commandParts, message, comment, character)
     {
         let factoredPool = 0,
-            {difficulty, specialty} = this.preParseRoll(message.content.toLowerCase()),
+            {difficulty, specialty, willpower} = this.preParseRoll(message.content.toLowerCase()),
             factors = [];
         for(let part of commandParts)
         {
@@ -96,9 +98,10 @@ class ServerBot extends WoDDiceBot
             await message.reply('You are not sufficiently skilled to qualify for this roll');
             return;
         }
-        let action = new Action(factoredPool, difficulty, specialty);
+        // TODO: Reduce the checked out character's willpower and save it
+        let action = new Action(factoredPool, difficulty, specialty, willpower, factors);
         let results = action.getResults();
-        this.displayResults(message, results, factors, comment);
+        this.displayResults(message, results, comment);
     }
 
 
@@ -145,6 +148,15 @@ class ServerBot extends WoDDiceBot
             await message.reply('You do not have permissions on this character');
         }
 
+    }
+
+    get helpText()
+    {
+        let helpText = super.helpText;
+        helpText.push('Rolling with character skills and attributes (see: http://vtm.so-4pt.net/characters/about/)');
+        helpText.push('     `!roll dexterity melee` will roll your flat dexterity plus melee at diff 6');
+        helpText.push('     `!roll dexterity melee 5` will roll your dexterity plus melee plus 5');
+        return helpText;
     }
 
     async stowCharacter(commandParts, message)

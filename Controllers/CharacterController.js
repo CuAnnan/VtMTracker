@@ -1,4 +1,5 @@
 const   Character = require('../Model/Character'),
+        Road = require('../Model/Road'),
         Controller = require('./Controller'),
         {GameSchema, DiscordUserSchema, UserSchema, CharacterSchema, CharacterPermissionsSchema} = require('../schemas/AllSchemas');
 
@@ -43,7 +44,7 @@ class CharacterController extends Controller
     async loadAction(req, res)
     {
         let character = await this.fetchCharacterEntity(req, req.params.reference);
-        res.render('characters/character-build', {character:character});
+        res.render('characters/character-build', {character:character, roads:Road.roadsData});
     }
 
     async saveAction(req, res)
@@ -108,6 +109,11 @@ class CharacterController extends Controller
             return Character.fromJSON(character.json);
         }
         return null;
+    }
+
+    async aboutAction(req, res)
+    {
+        res.render('characters/about');
     }
 }
 

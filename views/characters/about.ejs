@@ -1,0 +1,28 @@
+<%- include ../inc/header%>
+
+<h1>About</h1>
+
+<p>
+    Without getting too into what makes this system work (the entire github repository is open and FOSS),
+    when you create a character and link it to a game, it is automatically exposed to the discord bot. This allows you
+    to roll with attributes and skills without needing to know your pools.
+</p>
+<p>
+    The bot will calculate your pools and increase difficulty as required, such that if you tell it to roll
+    dexterity and melee at difficulty 6, but melee is untrained, the diebot will increase the difficulty to 7 and roll your
+    raw dexterity.
+</p>
+<p>
+    While it is possible to checkout characters manually, it is largely unnecessary as the system will pull out the character
+    that is associated with the game for your user.
+</p>
+<p>
+    All of this presupposes that you have connected your discord user to your user here. The necessary command to do
+    that is listed in your account page.
+</p>
+<p>
+    Of note: The system does not currently track experience at all. It merely acts similarly to the form-editable PDFs
+    in a manner that is much more computer-friendly.
+</p>
+
+<%- include ../inc/footer%>

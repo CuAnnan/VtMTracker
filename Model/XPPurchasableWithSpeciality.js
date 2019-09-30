@@ -4,9 +4,9 @@ class UnavailableSpecialtyError extends Error{}
 
 class XPPurchasableWithSpeciality extends XPPurchasable
 {
-    constructor(name, min)
+    constructor(name, min, max)
     {
-        super(name, min);
+        super(name, min, max);
         this.specialties = [];
     }
 

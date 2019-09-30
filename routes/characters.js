@@ -7,5 +7,6 @@ router.get('/load/:reference', (req, res, next)=>Controller.loadAction(req, res)
 router.get('/view/:reference', (req, res, next)=>Controller.loadAction(req, res).catch(next));
 router.post('/new/', (req, res, next)=>Controller.newCharacterAction(req, res).catch(next));
 router.post('/save/', (req, res, next)=>Controller.saveAction(req, res).catch(next));
+router.post('/about/', (req, res, next)=>Controller.aboutAction(req, res).catch(next));
 
 module.exports = router;

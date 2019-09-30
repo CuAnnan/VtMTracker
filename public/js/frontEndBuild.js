@@ -8,10 +8,11 @@ class Ability extends XPPurchasableWithSpecialty
         super(name, 0);
         this.unskilledPenalty = unskilledPenalty;
     }
+
 }
 
 module.exports = Ability;
-},{"./XPPurchasableWithSpeciality":5}],2:[function(require,module,exports){
+},{"./XPPurchasableWithSpeciality":7}],2:[function(require,module,exports){
 const XPPurchasableWithSpecialty = require('./XPPurchasableWithSpeciality');
 
 class Attribute extends XPPurchasableWithSpecialty
@@ -24,9 +25,12 @@ class Attribute extends XPPurchasableWithSpecialty
 }
 
 module.exports = Attribute;
-},{"./XPPurchasableWithSpeciality":5}],3:[function(require,module,exports){
+},{"./XPPurchasableWithSpeciality":7}],3:[function(require,module,exports){
 const   Attribute = require('./Attribute'),
         Ability = require('./Ability'),
+        Road = require('./Road'),
+        Virtue = require('./Virtue'),
+        XPPurchasable = require('./XPPurchasable'),
         attributes = {
             Physical:['Strength', 'Dexterity', 'Stamina'],
             Social:['Charisma', 'Manipulation', 'Appearance'],
@@ -40,6 +44,8 @@ const   Attribute = require('./Attribute'),
         abilityPenalties = {
             Talents:0,
             Skills:1,
+            // an unskilled knowledge can't be rolled without ST approval so just stick the diff penalty
+            // to ten and the die roller will know it can't be don
             Knowledges:10
         };
 
@@ -50,9 +56,15 @@ class Character
         this.name = name;
         this.clan = clan;
         this.reference = reference;
+
+        this.willpower = new XPPurchasable('Willpower', 0, 10);
+        this.bloodpool = new XPPurchasable('Bloodpool', 0, 40);
+
         this.attributes = {};
+        this.unsortedAttributes = [];
         this.lookups = {};
         this.abilities = {};
+        this.unsortedAbilities = [];
         for(let useGroup in attributes)
         {
             this.attributes[useGroup] = [];
@@ -60,6 +72,7 @@ class Character
             {
                 let attribute = new Attribute(attributeName);
                 this.attributes[useGroup].push(attribute);
+                this.unsortedAttributes.push(attribute);
                 this.lookups[attributeName.toLowerCase()] = attribute;
             }
         }
@@ -70,40 +83,184 @@ class Character
             {
                 let ability = new Ability(abilityName,abilityPenalties[useGroup]);
                 this.abilities[useGroup].push(ability);
+                this.unsortedAbilities.push(ability);
                 this.lookups[abilityName.toLowerCase()] = ability;
             }
         }
+        this.courage = new Virtue('courage', 0, 5);
+        this.lookups.courage = this.courage;
+        this.lookups.bloodpool = this.bloodpool;
+        this.lookups.willpower = this.willpower;
+    }
+
+    set road(road)
+    {
+        if(this._road)
+        {
+            delete this.lookups[this.virtue1.name];
+            delete this.lookups[this.virtue2.name];
+        }
+        this._road = road;
+        this.aura = this._road.aura;
+        this.virtue1 = this._road.virtue1;
+        this.virtue2 = this._road.virtue2;
+        this.lookups[this.virtue1.name] = this.virtue1;
+        this.lookups.virtue1 = this.virtue1;
+        this.lookups[this.virtue2.name] = this.virtue2;
+        this.lookups.virtue2 = this.virtue2;
+        this.lookups.road = road;
+    }
+
+    get road()
+    {
+        return this._road;
+    }
+
+    toJSON()
+    {
+        let json = {
+            name:this.name,
+            clan:this.clan,
+            reference:this.reference,
+            abilities:this.unsortedAbilities,
+            attributes:this.unsortedAttributes,
+            courage:this.courage,
+            bloodpool:this.bloodpool,
+            willpower:this.willpower,
+        };
+        if(this.road)
+        {
+            json.road = this.road;
+        }
+        return json;
+    }
+
+    static fromJSON(json)
+    {
+        let character = new Character(json.name, json.clan, json.reference);
+        if (json.road) {
+            let road = Road.fromJSON(json.road);
+            character.road = road;
+        }
+        if(json.courage)
+        {
+            character.lookups.courage.loadJSON(json.courage);
+        }
+        for (let lookup of Object.values(json.abilities)) {
+            character.lookups[lookup.name.toLowerCase()].loadJSON(lookup);
+        }
+        for (let lookup of Object.values(json.attributes)) {
+            character.lookups[lookup.name.toLowerCase()].loadJSON(lookup);
+        }
+        if(json.bloodpool)
+        {
+            character.lookups.bloodpool.loadJSON(json.bloodpool);
+        }
+        if(json.willpower)
+        {
+            character.lookups.willpower.loadJSON(json.willpower);
+        }
+
+        return character;
+
+    }
+}
+
+module.exports = Character;
+},{"./Ability":1,"./Attribute":2,"./Road":4,"./Virtue":5,"./XPPurchasable":6}],4:[function(require,module,exports){
+const   roadsData = require('./roadsData'),
+        XPPurchasable = require('./XPPurchasable'),
+        Virtue = require('./Virtue');
+
+class Road extends XPPurchasable
+{
+    constructor(name, aura)
+    {
+        super(name, 0, 10);
+        this.name = name;
+        this.virtue1 = null;
+        this.virtue2 = null;
+        this.aura = aura;
+    }
+
+    setVirtue1(virtue)
+    {
+        this.virtue1 = virtue;
+        return this;
+    }
+
+    setVirtue2(virtue)
+    {
+        this.virtue2 = virtue;
+        return this;
     }
 
     toJSON()
     {
         return {
             name:this.name,
-            clan:this.clan,
-            reference:this.reference,
-            lookups:this.lookups
-        };
+            virtue1:this.virtue1,
+            virtue2:this.virtue2,
+            aura:this.aura,
+            bought:this.bought
+        }
     }
 
     static fromJSON(json)
     {
-        let character = new Character(json.name, json.clan, json.reference);
-        for(let lookup of Object.values(json.lookups))
-        {
-            character.lookups[lookup.name.toLowerCase()].loadJSON(lookup);
-        }
-        return character;
+        let road = new Road(json.name, json.aura)
+            .setVirtue1(Virtue.fromJSON(json.virtue1))
+            .setVirtue2(Virtue.fromJSON(json.virtue2));
+        road.bought = json.bought;
+        return road;
+    }
+
+    static get roadsData()
+    {
+        return roadsData;
+    }
+
+    static fromArray(array)
+    {
+        return new Road(
+                array[0],
+                array[3]
+            )
+            .setVirtue1(new Virtue(array[1]))
+            .setVirtue2(new Virtue(array[2]));
+    }
+
+    static byName(name)
+    {
+        let roadData = roadsData.find(val=>val[0]===name);
+        let road = Road.fromArray(roadData);
+        return road;
     }
 }
 
-module.exports = Character;
-},{"./Ability":1,"./Attribute":2}],4:[function(require,module,exports){
+module.exports = Road;
+},{"./Virtue":5,"./XPPurchasable":6,"./roadsData":9}],5:[function(require,module,exports){
+const XPPurchasable = require('./XPPurchasable');
+
+class Virtue extends XPPurchasable
+{
+    constructor(name)
+    {
+        super(name, 0, 5);
+    }
+
+
+}
+
+module.exports = Virtue;
+},{"./XPPurchasable":6}],6:[function(require,module,exports){
 class XPPurchasable
 {
-    constructor(name, min)
+    constructor(name, min, max)
     {
         this.name = name;
         this.min = min;
+        this.max = max;
         this.bought = 0;
     }
 
@@ -119,34 +276,41 @@ class XPPurchasable
 
     toJSON()
     {
-        return {name:this.name, min:this.min, bought:this.bought};
+        return {
+            name:this.name,
+            min:this.min,
+            bought:this.bought,
+            className:this.constructor.name
+        };
     }
 
     loadJSON(json)
     {
         this.name = json.name;
         this.min = json.min;
+        this.max = json.max;
         this.bought = json.bought;
     }
 
     static fromJSON(json)
     {
-        let obj =  new this(json.name, json.min);
+        let obj =  new this(json.name, json.min, json.max);
         obj.bought = json.bought;
+        return obj;
     }
 }
 
 module.exports = XPPurchasable;
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 const XPPurchasable  = require('./XPPurchasable');
 
 class UnavailableSpecialtyError extends Error{}
 
 class XPPurchasableWithSpeciality extends XPPurchasable
 {
-    constructor(name, min)
+    constructor(name, min, max)
     {
-        super(name, min);
+        super(name, min, max);
         this.specialties = [];
     }
 
@@ -188,35 +352,66 @@ class XPPurchasableWithSpeciality extends XPPurchasable
     }
 }
 module.exports = XPPurchasableWithSpeciality;
-},{"./XPPurchasable":4}],6:[function(require,module,exports){
-const Character = require('./Character');
+},{"./XPPurchasable":6}],8:[function(require,module,exports){
+const   Character = require('./Character'),
+        Road = require('./Road');
 (($)=>{
     /**
      * @type {Character}
      */
     let toon = null;
+
     function setPurchasableLevel()
     {
         let $span = $(this),
             level = parseInt($span.data('level')),
             $parentCol = $span.closest('.col'),
             purchasableName = $parentCol.data('purchasable'),
-            purchasable = toon.lookups[purchasableName];
+            purchasable = toon.lookups[purchasableName],
+            fullClassName = 'fas fa-circle',
+            emptyClassName = 'far fa-circle',
+            data = $parentCol.data();
+
+        if(data.fullClassName)
+        {
+            fullClassName = data.fullClassName;
+        }
+        if(data.emptyClassName)
+        {
+            console.log('Overwrite the fucking class name');
+            emptyClassName = data.emptyClassName;
+        }
+
+        if(!(purchasable && purchasableName))
+        {
+            return;
+        }
         // determine what level we're setting, what it's at, and what to do about any differences
         if(level == purchasable.level && level > purchasable.min)
         {
             level --;
         }
         purchasable.level = level;
+        console.log(level);
+
         if(level)
         {
-            $(`span:lt(${level})`, $parentCol).html('<i class="fas fa-circle"></i>');
-            $(`span:gt(${level - 1})`, $parentCol).html('<i class="far fa-circle"></i>');
+            console.log(emptyClassName);
+            $(`span:lt(${level})`, $parentCol).html(`<i class="${fullClassName}"></i>`);
+            $(`span:gt(${level - 1})`, $parentCol).html(`<i class="${emptyClassName}"></i>`);
         }
         else
         {
-            $(`span`, $parentCol).html('<i class="far fa-circle"></i>');
+            $(`span`, $parentCol).html(`<i class="${emptyClassName}"></i>`);
         }
+
+        if(purchasableName === 'willpower')
+        {
+            let $wpContainer = $('#willpowerContainer');
+            $(`span:lt(${level})`, $wpContainer).html(`<i class="far fa-square"></i>`);
+            $(`span:gt(${level - 1})`, $wpContainer).html(`<i class="fas fa-square"></i>`);
+        }
+
         saveCharacter();
     }
 
@@ -231,11 +426,61 @@ const Character = require('./Character');
         );
     }
 
+    function setRoad()
+    {
+        let $select = $(this),
+            name = $select.val();
+        if(name)
+        {
+            let road = Road.byName(name);
+            toon.road = road;
+            $('#virtue1Name').text(road.virtue1.name);
+            $('#virtue2Name').text(road.virtue2.name);
+        }
+        else
+        {
+            toon.road = null;
+        }
+        saveCharacter();
+    }
+
 
     $(()=> {
-        toon = Character.fromJSON(rawCharacterJSON);
+        window.toon = toon = Character.fromJSON(rawCharacterJSON);
         $('.simplePurchasable').click(setPurchasableLevel);
+        let $roadsSelect = $('#roadsSelect').change(setRoad);
     });
 
 })(window.jQuery);
-},{"./Character":3}]},{},[6]);
+},{"./Character":3,"./Road":4}],9:[function(require,module,exports){
+let roads = [
+    ['Beast', 'Conviction', 'Instinct', 'Menace'],
+    ['Hunter', 'Conviction', 'Instinct', 'Menace'],
+    ['Journeys', 'Conviction', 'Self-Control', 'Menace'],
+    ['Liberation', 'Conviction', 'Instinct', 'Menace'],
+    ['Heaven', 'Conscience', 'Self-Control', 'Holiness'],
+    ['Christ', 'Conscience', 'Self-Control', 'Holiness'],
+    ['Life', 'Conscience', 'Self-Control', 'Holiness'],
+    ['Humanity', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Breath', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Community', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Illumination', 'Conscience', 'Self-Control', 'Humanity'],
+    ['Kings', 'Conviction', 'Self-Control', 'Command'],
+    ['Chivalry', 'Conscience', 'Self-Control', 'Command'],
+    ['Devaraja', 'Conviction', 'Self-Control', 'Command'],
+    ['Daena', 'Conviction', 'Self-Control', 'Command'],
+    ['Lilith', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Thorns', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Veils', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Making', 'Conviction', 'Instinct', 'Carved and Bleeding'],
+    ['Metamorphosis', 'Conviction', 'Instinct', 'Inhumanity'],
+    ['Sin', 'Conviction', 'Instinct', 'Temptation'],
+    ['Pleasure', 'Conviction', 'Instinct', 'Temptation'],
+    ['Devil', 'Conviction', 'Instinct', 'Temptation'],
+    ['Screams', 'Conviction', 'Instinct', 'Temptation'],
+    ['Bones', 'Conviction', 'Self-Control', 'Silence'],
+    ['Yasa', 'Conviction', 'Self-Control', 'Trust']
+];
+
+module.exports = roads;
+},{}]},{},[8]);
