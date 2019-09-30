@@ -61,8 +61,11 @@ class ServerBot extends WoDDiceBot
         if(!character)
         {
             character = await CharacterController.getMostRecentCharacterForGuild(message);
-            characterCache.put(message.author.id, character);
-            this.getServerCache(message);
+            if(character)
+            {
+                characterCache.put(message.author.id, character);
+                this.getServerCache(message);
+            }
         }
         return character;
     }
