@@ -1,10 +1,9 @@
 class XPPurchasable
 {
-    constructor(name, min, max)
+    constructor(name, min)
     {
         this.name = name;
         this.min = min;
-        this.max = max;
         this.bought = 0;
     }
 
@@ -23,8 +22,7 @@ class XPPurchasable
         return {
             name:this.name,
             min:this.min,
-            bought:this.bought,
-            className:this.constructor.name
+            bought:this.bought
         };
     }
 
@@ -32,7 +30,6 @@ class XPPurchasable
     {
         this.name = json.name;
         this.min = json.min;
-        this.max = json.max;
         this.bought = json.bought;
     }
 

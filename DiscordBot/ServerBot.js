@@ -7,7 +7,7 @@ const   WoDDiceBot = require('./WoDDiceBot'),
         ObjectCache = require('objectcache');
 let instancedBot = null;
 class GuildNotAvailableError extends Error{}
-const cache = new ObjectCache();
+const characterCache = new ObjectCache(3600000);
 
 /**
  * This extension of the bot is for integration with the webserver
@@ -45,17 +45,36 @@ class ServerBot extends WoDDiceBot
         this.attachCommand('checkout', this.checkCharacterOut);
         this.attachCommand('stow', this.stowCharacter);
         this.attachCommand('linkServer', this.linkServer);
+        this.attachCommand('wprefresh', this.serverCharacterWillpowerReset);
+    }
+
+    async serverCharacterWillpowerReset(commandParts, message, comment)
+    {
+        let wpAmount = commandParts[0];
+        wpAmount = wpAmount ? wpAmount : 1;
+        await message.reply(`All characters on this server have had their willpower increased by ${wpAmount}`);
+    }
+
+    async getCharacterForCurrentUser(message)
+    {
+        let character = characterCache.get(message.author.id);
+        if(!character)
+        {
+            character = await CharacterController.getMostRecentCharacterForGuild(message);
+            characterCache.put(message.author.id, character);
+            this.getServerCache(message);
+        }
+        return character;
+    }
+
+    getServerCache(message)
+    {
+
     }
 
     async simpleRoll(commandParts, message, comment)
     {
-        let character = cache.get(message.author.id);
-
-        if(!character)
-        {
-            character = await CharacterController.getMostRecentCharacterForGuild(message);
-            cache.put(message.author.id, character);
-        }
+        let character = await this.getCharacterForCurrentUser(message);
 
         if(character)
         {
@@ -140,7 +159,7 @@ class ServerBot extends WoDDiceBot
         if(hasPermission)
         {
             let toon = Character.fromJSON(characterEntity.json);
-            cache.put(message.author.id, toon);
+            characterCache.put(message.author.id, toon);
             await message.reply(`Character ${toon.name} is checked out for use`);
         }
         else
@@ -161,7 +180,7 @@ class ServerBot extends WoDDiceBot
 
     async stowCharacter(commandParts, message)
     {
-        cache.remove(message.author.id);
+        characterCache.remove(message.author.id);
         await message.reply('Your character has been stowed');
         return null;
     }

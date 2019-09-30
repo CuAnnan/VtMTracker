@@ -3,6 +3,7 @@ const   Attribute = require('./Attribute'),
         Road = require('./Road'),
         Virtue = require('./Virtue'),
         XPPurchasable = require('./XPPurchasable'),
+        Spendable = require('./Spendable'),
         attributes = {
             Physical:['Strength', 'Dexterity', 'Stamina'],
             Social:['Charisma', 'Manipulation', 'Appearance'],
@@ -29,8 +30,8 @@ class Character
         this.clan = clan;
         this.reference = reference;
 
-        this.willpower = new XPPurchasable('Willpower', 0, 10);
-        this.bloodpool = new XPPurchasable('Bloodpool', 0, 40);
+        this.willpower = new Spendable('Willpower', 0);
+        this.bloodpool = new Spendable('Bloodpool', 0);
 
         this.attributes = {};
         this.unsortedAttributes = [];

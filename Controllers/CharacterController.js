@@ -101,8 +101,12 @@ class CharacterController extends Controller
     {
         let localDiscordUser = await DiscordUserSchema.findOne({discordUserId:discordMessage.author.id}),
             user = await UserSchema.findOne({discordUserReferences:localDiscordUser}),
-            game = await GameSchema.findOne({discordGuildId:discordMessage.guild.id}).populate('characters'),
-            character = game.characters.find(character=> character.owner._id.equals(user._id));
+            game = await GameSchema.findOne({discordGuildId:discordMessage.guild.id}).populate('characters');
+        if(!game)
+        {
+            return null;
+        }
+        let character = game.characters.find(character=> character.owner._id.equals(user._id));
 
         if(character)
         {
