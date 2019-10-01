@@ -7,9 +7,16 @@ class CharacterController extends Controller
 {
     async indexAction(req, res)
     {
-        let user = await this.getLoggedInUser(req),
-            characters = await CharacterSchema.find({owner:user});
-        res.render('characters/index', {characters:characters});
+        let user = await this.getLoggedInUser(req);
+        if(user._id)
+        {
+            let characters = await CharacterSchema.find({owner:user});
+            res.render('characters/index', {characters:characters});
+        }
+        else
+        {
+            res.render('login');
+        }
         return null;
     }
 

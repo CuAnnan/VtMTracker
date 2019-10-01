@@ -32,4 +32,4 @@ class Spendable extends XPPurchasable {
     }
 }
 
-module.exportes = Spendable;
+module.exports = Spendable;

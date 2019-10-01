@@ -8,10 +8,16 @@ class GameController extends Controller
 {
     async indexAction(req, res)
     {
-        let loggedInUser = await this.getLoggedInUser(req),
-            gamesRun = await GameSchema.find({owner:loggedInUser}),
-            gamesPlayed = await GameSchema.find({player:loggedInUser});
-        res.render('games/index', {gamesRun:gamesRun, gamesPlayed:gamesPlayed});
+        let loggedInUser = await this.getLoggedInUser(req);
+        if(loggedInUser._id) {
+            let gamesRun = await GameSchema.find({owner: loggedInUser}),
+                gamesPlayed = await GameSchema.find({players: loggedInUser});
+            res.render('games/index', {gamesRun: gamesRun, gamesPlayed: gamesPlayed});
+        }
+        else
+        {
+            res.render('login');
+        }
         return null;
     }
 
@@ -31,17 +37,22 @@ class GameController extends Controller
 
     async showAction(req, res)
     {
-        let loggedInUser = await this.getLoggedInUser(req),
-            game = await GameSchema
-                .findOne({reference:req.params.reference})
+        let loggedInUser = await this.getLoggedInUser(req);
+        if(loggedInUser._id) {
+            let game = await GameSchema
+                .findOne({reference: req.params.reference})
                 .populate({
-                    path:'characters',
+                    path: 'characters',
                     populate: {path: 'owner'}
                 })
                 .populate('owner')
                 .populate('players');
-
-        res.render('games/show', {game:game});
+            res.render('games/show', {game: game});
+        }
+        else
+        {
+            res.render('login');
+        }
         return null;
     }
 
@@ -62,17 +73,23 @@ class GameController extends Controller
 
     async joinAction(req, res)
     {
-        let loggedInUser = await this.getLoggedInUser(req),
-            character = await CharacterSchema.findOne({reference:req.body.characterReference}),
-            game = await GameSchema.findOne({reference:req.params.reference});
-        game.players.addToSet(loggedInUser);
-        game.characters.addToSet(character);
-        game.save();
-        CharacterPermissionSchema.create({
-            user:game.owner,
-            character:character
-        });
-        res.redirect(`/games/show/${game.reference}`);
+        let loggedInUser = await this.getLoggedInUser(req);
+        if(loggedInUser._id) {
+            let character = await CharacterSchema.findOne({reference: req.body.characterReference}),
+                game = await GameSchema.findOne({reference: req.params.reference});
+            game.players.addToSet(loggedInUser);
+            game.characters.addToSet(character);
+            game.save();
+            CharacterPermissionSchema.create({
+                user: game.owner,
+                character: character
+            });
+            res.redirect(`/games/show/${game.reference}`);
+        }
+        else
+        {
+            res.render('login');
+        }
         return null;
     }
 
