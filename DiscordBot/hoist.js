@@ -24,12 +24,12 @@ function logBotIn(conf)
 
 module.exports = {hoist:async function(conf)
 {
-    dieBot = await logBotIn(conf);
+    await logBotIn(conf);
 
     process.on(
         'SIGINT',
         ()=>{
-            dieBot.shutdown().then(
+            DieBot.getStaticInstance().shutdown().then(
                 ()=>{
                     client.destroy();
                     process.exit();
