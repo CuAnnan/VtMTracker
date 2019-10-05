@@ -60,7 +60,7 @@ class CharacterController extends Controller
     async buildHistoryAction(req, res)
     {
         let character = await this.fetchCharacterEntity(req, req.params.reference, true),
-            history = await CharacterUpdateSchema.find({character:character});
+            history = await CharacterUpdateSchema.find({character:character}).sort({'timestamp':'desc'});
         res.render('characters/buildHistory', {character:character, history:history, moment:moment});
         return null;
     }
