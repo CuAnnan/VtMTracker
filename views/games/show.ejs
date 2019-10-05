@@ -54,6 +54,7 @@
                         (game.owner.reference === locals.sessionUser.reference || character.owner.reference === locals.sessionUser.reference)
                     ){%>
                     <a class="btn btn-sm btn-primary" target="_blank" href="/characters/load/<%- character.reference%>">View</a>
+                    <a class="btn btn-sm btn-primary" target="_blank" href="/characters/history/<%- character.reference%>">History</a>
                     <button class="btn btn-sm btn-warning removeCharacterButton" data-game-reference="<%- game.reference %>" data-character-reference="<%- character.reference%>">Remove</button>
                     <% }%>
                 </div>

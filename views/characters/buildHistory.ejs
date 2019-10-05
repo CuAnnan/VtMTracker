@@ -1,0 +1,19 @@
+<%- include ../inc/header %>
+
+<h1 class="row"><%- character.name %> Changelog</h1>
+<div class="row" style="font-weight:bold">
+    <div class="col">Purchase</div>
+    <div class="col">Old Level</div>
+    <div class="col">New Level</div>
+    <div class="col">Date</div>
+</div>
+<% for(let characterUpdate of history){%>
+    <div class="row">
+        <div class="col"><%- characterUpdate.update.name %></div>
+        <div class="col"><%- characterUpdate.update.oldLevel %></div>
+        <div class="col"><%- characterUpdate.update.newLevel %></div>
+        <div class="col"><%- moment(characterUpdate.timestamp).format('MMMM Do YYYY') %></div>
+    </div>
+<% }%>
+
+<%- include ../inc/footer %>

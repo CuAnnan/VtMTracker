@@ -17,6 +17,11 @@ const   Character = require('./Character'),
             emptyClassName = 'far fa-circle',
             data = $parentCol.data();
 
+        let changeData = {
+            name:purchasable.name,
+            oldLevel:purchasable.level
+        };
+
         if(data.fullClassName)
         {
             fullClassName = data.fullClassName;
@@ -37,7 +42,7 @@ const   Character = require('./Character'),
             level --;
         }
         purchasable.level = level;
-        console.log(level);
+        changeData.newLevel = level;
 
         if(level)
         {
@@ -57,14 +62,14 @@ const   Character = require('./Character'),
             $(`span:gt(${level - 1})`, $wpContainer).html(`<i class="fas fa-square"></i>`);
         }
 
-        saveCharacter();
+        saveCharacter(changeData);
     }
 
-    function saveCharacter()
+    function saveCharacter(changeData)
     {
         $.post(
             '/characters/save/',
-            {reference:toon.reference, json:JSON.stringify(toon.toJSON())},
+            {reference:toon.reference, json:JSON.stringify(toon.toJSON()), changeData:JSON.stringify(changeData)},
             (response)=>{
                 console.log(response);
             }

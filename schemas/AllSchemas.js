@@ -5,6 +5,7 @@ let package = {
     DiscordUserSchema : require('./DiscordUser'),
     GameSchema : require('./Game'),
     UserSchema : require('./User'),
+    CharacterUpdateSchema: require('./CharacterUpdate')
 };
 
 module.exports = package;

@@ -1,7 +1,8 @@
 const   Character = require('../Model/Character'),
         Road = require('../Model/Road'),
         Controller = require('./Controller'),
-        {GameSchema, DiscordUserSchema, UserSchema, CharacterSchema, CharacterPermissionsSchema} = require('../schemas/AllSchemas');
+        moment = require('moment'),
+        {GameSchema, DiscordUserSchema, UserSchema, CharacterSchema, CharacterPermissionsSchema, CharacterUpdateSchema} = require('../schemas/AllSchemas');
 
 class CharacterController extends Controller
 {
@@ -31,7 +32,7 @@ class CharacterController extends Controller
                 owner: user,
                 name: req.body.name
             });
-            CharacterPermissionsSchema.create({
+            await CharacterPermissionsSchema.create({
                 user:user,
                 character:characterEntity
             });
@@ -40,6 +41,7 @@ class CharacterController extends Controller
                 success:true,
                 reference:characterEntity.reference
             });
+            return null;
         }
         catch(e)
         {
@@ -52,6 +54,15 @@ class CharacterController extends Controller
     {
         let character = await this.fetchCharacterEntity(req, req.params.reference);
         res.render('characters/character-build', {character:character, roads:Road.roadsData});
+        return null;
+    }
+
+    async buildHistoryAction(req, res)
+    {
+        let character = await this.fetchCharacterEntity(req, req.params.reference, true),
+            history = await CharacterUpdateSchema.find({character:character});
+        res.render('characters/buildHistory', {character:character, history:history, moment:moment});
+        return null;
     }
 
     async saveAction(req, res)
@@ -61,6 +72,12 @@ class CharacterController extends Controller
             let character = await this.fetchCharacterEntity(req, req.body.reference, true);
             character.json = JSON.parse(req.body.json);
             await character.save();
+
+            await CharacterUpdateSchema.create({
+                character:character,
+                update:JSON.parse(req.body.changeData)
+            });
+
             await res.json({
                 success:true
             });
@@ -74,6 +91,13 @@ class CharacterController extends Controller
         return null;
     }
 
+    /**
+     * This method performs the permission check to see that a logged in user has the permissions to view a character
+     * @param req
+     * @param characterReference
+     * @param returnRaw
+     * @returns {Promise<Character>}
+     */
     async fetchCharacterEntity(req, characterReference, returnRaw)
     {
         let user = await this.getLoggedInUser(req),

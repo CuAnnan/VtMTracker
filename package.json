@@ -8,21 +8,25 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "bufferutil": "^4.0.1",
     "connect-mongodb-session": "^2.2.0",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
+    "cookie-parser": "^1.4.4",
+    "debug": "^2.6.9",
     "discord.js": "^11.5.1",
-    "ejs": "~2.6.1",
-    "express": "~4.16.1",
+    "ejs": "^2.6.2",
+    "express": "^4.16.4",
     "express-session": "^1.16.2",
     "extensiblediscordbot": "git+https://github.com/CuAnnan/DiscordBot.git",
-    "http-errors": "~1.6.3",
-    "mongoose": "^5.7.1",
-    "morgan": "~1.9.1",
+    "http-errors": "^1.6.3",
+    "moment": "^2.24.0",
+    "mongoose": "^5.7.3",
+    "morgan": "^1.9.1",
     "objectcache": "git+https://github.com/CuAnnan/ObjectCache.git",
     "popper.js": "^1.15.0",
     "sendmail": "^1.6.1",
-    "shortid": "^2.2.15"
+    "shortid": "^2.2.15",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0",
+    "ws": "^7.1.2"
   },
   "devDependencies": {
     "browserify": "^16.5.0"

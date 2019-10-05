@@ -12,7 +12,7 @@ class Ability extends XPPurchasableWithSpecialty
 }
 
 module.exports = Ability;
-},{"./XPPurchasableWithSpeciality":7}],2:[function(require,module,exports){
+},{"./XPPurchasableWithSpeciality":8}],2:[function(require,module,exports){
 const XPPurchasableWithSpecialty = require('./XPPurchasableWithSpeciality');
 
 class Attribute extends XPPurchasableWithSpecialty
@@ -25,12 +25,13 @@ class Attribute extends XPPurchasableWithSpecialty
 }
 
 module.exports = Attribute;
-},{"./XPPurchasableWithSpeciality":7}],3:[function(require,module,exports){
+},{"./XPPurchasableWithSpeciality":8}],3:[function(require,module,exports){
 const   Attribute = require('./Attribute'),
         Ability = require('./Ability'),
         Road = require('./Road'),
         Virtue = require('./Virtue'),
         XPPurchasable = require('./XPPurchasable'),
+        Spendable = require('./Spendable'),
         attributes = {
             Physical:['Strength', 'Dexterity', 'Stamina'],
             Social:['Charisma', 'Manipulation', 'Appearance'],
@@ -57,8 +58,8 @@ class Character
         this.clan = clan;
         this.reference = reference;
 
-        this.willpower = new XPPurchasable('Willpower', 0, 10);
-        this.bloodpool = new XPPurchasable('Bloodpool', 0, 40);
+        this.willpower = new Spendable('Willpower', 0);
+        this.bloodpool = new Spendable('Bloodpool', 0);
 
         this.attributes = {};
         this.unsortedAttributes = [];
@@ -167,7 +168,7 @@ class Character
 }
 
 module.exports = Character;
-},{"./Ability":1,"./Attribute":2,"./Road":4,"./Virtue":5,"./XPPurchasable":6}],4:[function(require,module,exports){
+},{"./Ability":1,"./Attribute":2,"./Road":4,"./Spendable":5,"./Virtue":6,"./XPPurchasable":7}],4:[function(require,module,exports){
 const   roadsData = require('./roadsData'),
         XPPurchasable = require('./XPPurchasable'),
         Virtue = require('./Virtue');
@@ -239,7 +240,43 @@ class Road extends XPPurchasable
 }
 
 module.exports = Road;
-},{"./Virtue":5,"./XPPurchasable":6,"./roadsData":9}],5:[function(require,module,exports){
+},{"./Virtue":6,"./XPPurchasable":7,"./roadsData":10}],5:[function(require,module,exports){
+const   XPPurchasable = require('./XPPurchasable');
+
+class Spendable extends XPPurchasable {
+    constructor(name, min)
+    {
+        super(name, 0);
+        this.spent = 0;
+    }
+
+    spend(amount)
+    {
+        amount = parseInt(amount);
+        if(this.spent + amount < this.level)
+        {
+            this.spent += amount;
+            return true;
+        }
+        return false;
+    }
+
+    toJSON()
+    {
+        let json = super.toJSON();
+        json.spent = this.spent;
+    }
+
+    static fromJSON(json)
+    {
+        let obj = new this(json.name, json.min);
+        obj.spent = json.spent;
+        return obj;
+    }
+}
+
+module.exports = Spendable;
+},{"./XPPurchasable":7}],6:[function(require,module,exports){
 const XPPurchasable = require('./XPPurchasable');
 
 class Virtue extends XPPurchasable
@@ -253,14 +290,13 @@ class Virtue extends XPPurchasable
 }
 
 module.exports = Virtue;
-},{"./XPPurchasable":6}],6:[function(require,module,exports){
+},{"./XPPurchasable":7}],7:[function(require,module,exports){
 class XPPurchasable
 {
-    constructor(name, min, max)
+    constructor(name, min)
     {
         this.name = name;
         this.min = min;
-        this.max = max;
         this.bought = 0;
     }
 
@@ -279,8 +315,7 @@ class XPPurchasable
         return {
             name:this.name,
             min:this.min,
-            bought:this.bought,
-            className:this.constructor.name
+            bought:this.bought
         };
     }
 
@@ -288,7 +323,6 @@ class XPPurchasable
     {
         this.name = json.name;
         this.min = json.min;
-        this.max = json.max;
         this.bought = json.bought;
     }
 
@@ -301,7 +335,7 @@ class XPPurchasable
 }
 
 module.exports = XPPurchasable;
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 const XPPurchasable  = require('./XPPurchasable');
 
 class UnavailableSpecialtyError extends Error{}
@@ -352,7 +386,7 @@ class XPPurchasableWithSpeciality extends XPPurchasable
     }
 }
 module.exports = XPPurchasableWithSpeciality;
-},{"./XPPurchasable":6}],8:[function(require,module,exports){
+},{"./XPPurchasable":7}],9:[function(require,module,exports){
 const   Character = require('./Character'),
         Road = require('./Road');
 (($)=>{
@@ -371,6 +405,11 @@ const   Character = require('./Character'),
             fullClassName = 'fas fa-circle',
             emptyClassName = 'far fa-circle',
             data = $parentCol.data();
+
+        let changeData = {
+            name:purchasable.name,
+            oldLevel:purchasable.level
+        };
 
         if(data.fullClassName)
         {
@@ -392,7 +431,7 @@ const   Character = require('./Character'),
             level --;
         }
         purchasable.level = level;
-        console.log(level);
+        changeData.newLevel = level;
 
         if(level)
         {
@@ -412,14 +451,14 @@ const   Character = require('./Character'),
             $(`span:gt(${level - 1})`, $wpContainer).html(`<i class="fas fa-square"></i>`);
         }
 
-        saveCharacter();
+        saveCharacter(changeData);
     }
 
-    function saveCharacter()
+    function saveCharacter(changeData)
     {
         $.post(
             '/characters/save/',
-            {reference:toon.reference, json:JSON.stringify(toon.toJSON())},
+            {reference:toon.reference, json:JSON.stringify(toon.toJSON()), changeData:JSON.stringify(changeData)},
             (response)=>{
                 console.log(response);
             }
@@ -452,7 +491,7 @@ const   Character = require('./Character'),
     });
 
 })(window.jQuery);
-},{"./Character":3,"./Road":4}],9:[function(require,module,exports){
+},{"./Character":3,"./Road":4}],10:[function(require,module,exports){
 let roads = [
     ['Beast', 'Conviction', 'Instinct', 'Menace'],
     ['Hunter', 'Conviction', 'Instinct', 'Menace'],
@@ -483,4 +522,4 @@ let roads = [
 ];
 
 module.exports = roads;
-},{}]},{},[8]);
+},{}]},{},[9]);
