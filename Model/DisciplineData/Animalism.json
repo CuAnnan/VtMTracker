@@ -1,0 +1,15 @@
+{
+  "name": "Animalism",
+  "powers": [
+    {"name": "Feral Whispers", "level": 1, "poolFactors": [["Manipulation", "Animal Ken"]]},
+    {"name": "Beckoning", "level": 2, "poolFactors": [["Charisma", "Survival"]]},
+    {"name": "Quell the Beast", "level": 3, "poolFactors": [["Manipulation", "Intimidation"], ["Manipulation", "Empathy"]]},
+    {"name": "Subsume the Spirit", "level": 4, "poolFactors": [["Manipulation", "Animal Ken"]]},
+    {"name": "Drawing out the Beast", "level": 5, "poolFactors": [["Manupluation", "Self-Control"],["Manipulation", "Instinct"]]},
+    {"name": "Animal Succulence", "level": 6, "poolFactors": null},
+    {"name": "Shared Soul", "level": 6, "poolFactors":[["Perception", "Animal Ken"]]},
+    {"name": "Species Speech", "level": 6, "poolFactors": [["Manipulation", "Animal Ken"]]},
+    {"name": "Conquer the Beast", "level": 7, "poolFactors": [["Willpower"]]},
+    {"name": "Taunt the Caged Beast"}
+  ]
+}
