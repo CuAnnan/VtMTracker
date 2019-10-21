@@ -4,7 +4,10 @@ const   Character = require('./Character'),
     /**
      * @type {Character}
      */
-    let toon = null;
+    let toon = null,
+        $disciplineLabel = $('#disciplineMenuLabel'),
+        $disciplineName = $('#disciplineName'),
+        $disciplineLevel = $('#disciplineLevel');
 
     function setPurchasableLevel()
     {
@@ -94,10 +97,42 @@ const   Character = require('./Character'),
         saveCharacter();
     }
 
+    function showDisciplineUI()
+    {
+        $('#disciplineModal').modal('show');
+    }
+
+    function chooseDiscipline()
+    {
+        let $link = $(this),
+            discipline = $link.data('disciplineName');
+        $disciplineLabel.text(discipline);
+        $disciplineName.text(discipline);
+        if(toon.disciplines[discipline])
+        {
+            console.log(toon.disciplines[discipline]);
+        }
+    }
+
+    function loadDisciplineUI()
+    {
+        let $disciplineDDM = $('#disciplineDropDownMenu');
+
+        for(let discipline of disciplineNames)
+        {
+            $(`<a class="dropdown-item" data-discipline-name="${discipline}" data-target="#">${discipline}</a>`)
+                .appendTo($disciplineDDM)
+                .click(chooseDiscipline);
+        }
+    }
+
+
 
     $(()=> {
         window.toon = toon = Character.fromJSON(rawCharacterJSON);
+        loadDisciplineUI();
         $('.simplePurchasable').click(setPurchasableLevel);
+        $('#disciplineHR').click(showDisciplineUI);
         let $roadsSelect = $('#roadsSelect').change(setRoad);
     });
 

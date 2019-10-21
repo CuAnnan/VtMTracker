@@ -2,8 +2,11 @@
 <link rel="stylesheet" href="/css/main.css"/>
 
 <script type="text/javascript">
-    var rawCharacterJSON = <%- JSON.stringify(character.toJSON()) %>;
+    var rawCharacterJSON = <%- JSON.stringify(character.toJSON()) %>,
+        disciplineJSON = <%- JSON.stringify(disciplines) %>,
+        disciplineNames = Object.keys(disciplineJSON);
 </script>
+
     <!-- Unimportant stuff -->
     <div class="row">
         <div class="col">
@@ -115,7 +118,7 @@
     </div></div>
     <div class="row">
         <div class="col">
-            <hr class="hr-text hr-medium" data-content="Disciplines"/>
+            <hr class="hr-text hr-medium" data-content="Disciplines" style="cursor:pointer" id="disciplineHR"/>
         </div>
         <div class="col">
             <hr class="hr-text hr-medium" data-content="Backgrounds"/>
@@ -280,6 +283,43 @@
         <div class="col">
 
 
+        </div>
+    </div>
+    <div class="modal" tabindex="-1" role="dialog" id="disciplineModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Discipline Powers</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col">Discipline:</div>
+                        <div class="col">
+                            <div class="dropdown">
+                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="disciplineMenuLabel" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Discipline</a>
+                                <div class="dropdown-menu" aria-labelledby="disciplineMenuLabel" id="disciplineDropDownMenu"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" id="disciplineName"></div>
+                        <div class="col" id="disciplineLevel" data-purchasable="null">
+                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
+                                <%for(let i = 0; i < 10; i++){%>
+                                    <i class="far fa-circle"></i>
+                                <%}%>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
         </div>
     </div>
 <script type="text/javascript" src="/js/frontEndBuild.js"></script>

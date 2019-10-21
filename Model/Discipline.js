@@ -2,7 +2,7 @@ const XPPurchasable = require('./XPPurchasable');
 
 class DisciplinePower
 {
-    constructor(name, poolFactors, level, cost, learned)
+    constructor(name, poolFactors, level, cost)
     {
         this.name = name;
         this.poolFactors = poolFactors;
@@ -73,4 +73,4 @@ class Discipline extends XPPurchasable
 
 }
 
-module.exports = Discipline;
+module.exports = {Discipline:Discipline, DisciplinePower:DisciplinePower};

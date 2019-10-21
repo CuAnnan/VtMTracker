@@ -2,6 +2,7 @@ const   Attribute = require('./Attribute'),
         Ability = require('./Ability'),
         Road = require('./Road'),
         Virtue = require('./Virtue'),
+        {Discipline, DisciplinePower} = require('./Discipline'),
         XPPurchasable = require('./XPPurchasable'),
         Spendable = require('./Spendable'),
         attributes = {
@@ -60,6 +61,9 @@ class Character
                 this.lookups[abilityName.toLowerCase()] = ability;
             }
         }
+
+        this.disciplines = {};
+
         this.courage = new Virtue('courage', 0, 5);
         this.lookups.courage = this.courage;
         this.lookups.bloodpool = this.bloodpool;
@@ -87,6 +91,31 @@ class Character
     get road()
     {
         return this._road;
+    }
+
+    addDiscipline(discipline)
+    {
+        if(!this.disciplines[discipline.name])
+        {
+            this.disciplines[discipline.name] = discipline;
+        }
+        return this;
+    }
+
+    /**
+     * @param {Discipline} discipline
+     * @param {DisciplinePower} disciplinePower
+     * @returns {Character}
+     */
+    addDisciplinePower(discipline, disciplinePower)
+    {
+        if(!this.disciplines[discipline.name])
+        {
+            this.addDiscipline(discipline);
+        }
+        this.disciplines[discipline.name].addPower(disciplinePower);
+
+        return this;
     }
 
     toJSON()
@@ -132,6 +161,13 @@ class Character
         if(json.willpower)
         {
             character.lookups.willpower.loadJSON(json.willpower);
+        }
+        if(json.disciplines)
+        {
+            for(let discipline of json.disciplines)
+            {
+                character.addDiscipline(Discipline.fromJSON(discipline));
+            }
         }
 
         return character;

@@ -12,7 +12,7 @@ class Ability extends XPPurchasableWithSpecialty
 }
 
 module.exports = Ability;
-},{"./XPPurchasableWithSpeciality":8}],2:[function(require,module,exports){
+},{"./XPPurchasableWithSpeciality":9}],2:[function(require,module,exports){
 const XPPurchasableWithSpecialty = require('./XPPurchasableWithSpeciality');
 
 class Attribute extends XPPurchasableWithSpecialty
@@ -25,11 +25,12 @@ class Attribute extends XPPurchasableWithSpecialty
 }
 
 module.exports = Attribute;
-},{"./XPPurchasableWithSpeciality":8}],3:[function(require,module,exports){
+},{"./XPPurchasableWithSpeciality":9}],3:[function(require,module,exports){
 const   Attribute = require('./Attribute'),
         Ability = require('./Ability'),
         Road = require('./Road'),
         Virtue = require('./Virtue'),
+        Discipline = require('./Discipline'),
         XPPurchasable = require('./XPPurchasable'),
         Spendable = require('./Spendable'),
         attributes = {
@@ -88,6 +89,9 @@ class Character
                 this.lookups[abilityName.toLowerCase()] = ability;
             }
         }
+
+        this.disciplines = {};
+
         this.courage = new Virtue('courage', 0, 5);
         this.lookups.courage = this.courage;
         this.lookups.bloodpool = this.bloodpool;
@@ -115,6 +119,11 @@ class Character
     get road()
     {
         return this._road;
+    }
+
+    addDiscipline(discipline)
+    {
+
     }
 
     toJSON()
@@ -161,6 +170,13 @@ class Character
         {
             character.lookups.willpower.loadJSON(json.willpower);
         }
+        if(json.disciplines)
+        {
+            for(let discipline of json.disciplines)
+            {
+                character.addDiscipline(Discipline.fromJSON(discipline));
+            }
+        }
 
         return character;
 
@@ -168,7 +184,84 @@ class Character
 }
 
 module.exports = Character;
-},{"./Ability":1,"./Attribute":2,"./Road":4,"./Spendable":5,"./Virtue":6,"./XPPurchasable":7}],4:[function(require,module,exports){
+},{"./Ability":1,"./Attribute":2,"./Discipline":4,"./Road":5,"./Spendable":6,"./Virtue":7,"./XPPurchasable":8}],4:[function(require,module,exports){
+const XPPurchasable = require('./XPPurchasable');
+
+class DisciplinePower
+{
+    constructor(name, poolFactors, level, cost, learned)
+    {
+        this.name = name;
+        this.poolFactors = poolFactors;
+        this.level = level;
+        this.cost = cost?cost:null;
+    }
+
+    toJSON()
+    {
+        return {
+            name:this.name,
+            poolFactors:this.poolFactors,
+            level:this.level,
+            cost:this.cost
+        };
+    }
+
+    static fromJSON(json)
+    {
+        return new DisciplinePower(json.name, json.poolFactors, json.level, json.cost);
+    }
+}
+
+class Discipline extends XPPurchasable
+{
+    constructor(name)
+    {
+        super(name, 0);
+        this.powers = {};
+    }
+
+    toJSON()
+    {
+        let json = super.toJSON();
+        json.powers = [];
+        for(let powerList of Object.values(this.powers))
+        {
+            for(let power of powerList)
+            {
+                json.powers.push(power.toJSON());
+            }
+        }
+        return json;
+    }
+
+    addPower(power)
+    {
+        if(!this.powers[power.level])
+        {
+            this.powers[power.level] = [];
+            if(power.bought && power.level > this.bought)
+            {
+                this.bought = power.level;
+            }
+        }
+        this.powers[power.level].push(power);
+    }
+
+    static fromJSON(json)
+    {
+        let discipline = new Discipline(json.name);
+        for(let power of json.powers)
+        {
+            discipline.addPower(DisciplinePower.fromJSON(power));
+        }
+        return discipline;
+    }
+
+}
+
+module.exports = Discipline;
+},{"./XPPurchasable":8}],5:[function(require,module,exports){
 const   roadsData = require('./roadsData'),
         XPPurchasable = require('./XPPurchasable'),
         Virtue = require('./Virtue');
@@ -240,7 +333,7 @@ class Road extends XPPurchasable
 }
 
 module.exports = Road;
-},{"./Virtue":6,"./XPPurchasable":7,"./roadsData":10}],5:[function(require,module,exports){
+},{"./Virtue":7,"./XPPurchasable":8,"./roadsData":11}],6:[function(require,module,exports){
 const   XPPurchasable = require('./XPPurchasable');
 
 class Spendable extends XPPurchasable {
@@ -276,7 +369,7 @@ class Spendable extends XPPurchasable {
 }
 
 module.exports = Spendable;
-},{"./XPPurchasable":7}],6:[function(require,module,exports){
+},{"./XPPurchasable":8}],7:[function(require,module,exports){
 const XPPurchasable = require('./XPPurchasable');
 
 class Virtue extends XPPurchasable
@@ -290,7 +383,7 @@ class Virtue extends XPPurchasable
 }
 
 module.exports = Virtue;
-},{"./XPPurchasable":7}],7:[function(require,module,exports){
+},{"./XPPurchasable":8}],8:[function(require,module,exports){
 class XPPurchasable
 {
     constructor(name, min)
@@ -335,7 +428,7 @@ class XPPurchasable
 }
 
 module.exports = XPPurchasable;
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 const XPPurchasable  = require('./XPPurchasable');
 
 class UnavailableSpecialtyError extends Error{}
@@ -386,14 +479,15 @@ class XPPurchasableWithSpeciality extends XPPurchasable
     }
 }
 module.exports = XPPurchasableWithSpeciality;
-},{"./XPPurchasable":7}],9:[function(require,module,exports){
+},{"./XPPurchasable":8}],10:[function(require,module,exports){
 const   Character = require('./Character'),
         Road = require('./Road');
 (($)=>{
     /**
      * @type {Character}
      */
-    let toon = null;
+    let toon = null,
+        $disciplineLabel = $('#disciplineMenuLabel');
 
     function setPurchasableLevel()
     {
@@ -483,15 +577,41 @@ const   Character = require('./Character'),
         saveCharacter();
     }
 
+    function showDisciplineUI()
+    {
+        $('#disciplineModal').modal('show');
+    }
+
+    function chooseDiscipline()
+    {
+        let $link = $(this),
+            discipline = $link.data('disciplineName');
+        $disciplineLabel.text(discipline);
+    }
+
+    function loadDisciplineUI()
+    {
+        let $disciplineDDM = $('#disciplineDropDownMenu');
+
+        for(let discipline of disciplineNames)
+        {
+            $(`<a class="dropdown-item" data-discipline-name="${discipline}" data-target="#">${discipline}</a>`)
+                .appendTo($disciplineDDM)
+                .click(chooseDiscipline);
+        }
+    }
+
 
     $(()=> {
         window.toon = toon = Character.fromJSON(rawCharacterJSON);
+        loadDisciplineUI();
         $('.simplePurchasable').click(setPurchasableLevel);
+        $('#disciplineHR').click(showDisciplineUI);
         let $roadsSelect = $('#roadsSelect').change(setRoad);
     });
 
 })(window.jQuery);
-},{"./Character":3,"./Road":4}],10:[function(require,module,exports){
+},{"./Character":3,"./Road":5}],11:[function(require,module,exports){
 let roads = [
     ['Beast', 'Conviction', 'Instinct', 'Menace'],
     ['Hunter', 'Conviction', 'Instinct', 'Menace'],
@@ -522,4 +642,4 @@ let roads = [
 ];
 
 module.exports = roads;
-},{}]},{},[9]);
+},{}]},{},[10]);

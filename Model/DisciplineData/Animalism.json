@@ -1,15 +1,16 @@
 {
   "name": "Animalism",
   "powers": [
-    {"name": "Feral Whispers", "level": 1, "poolFactors": [["Manipulation", "Animal Ken"]]},
-    {"name": "Beckoning", "level": 2, "poolFactors": [["Charisma", "Survival"]]},
-    {"name": "Quell the Beast", "level": 3, "poolFactors": [["Manipulation", "Intimidation"], ["Manipulation", "Empathy"]]},
-    {"name": "Subsume the Spirit", "level": 4, "poolFactors": [["Manipulation", "Animal Ken"]]},
-    {"name": "Drawing out the Beast", "level": 5, "poolFactors": [["Manupluation", "Self-Control"],["Manipulation", "Instinct"]]},
-    {"name": "Animal Succulence", "level": 6, "poolFactors": null},
-    {"name": "Shared Soul", "level": 6, "poolFactors":[["Perception", "Animal Ken"]]},
-    {"name": "Species Speech", "level": 6, "poolFactors": [["Manipulation", "Animal Ken"]]},
-    {"name": "Conquer the Beast", "level": 7, "poolFactors": [["Willpower"]]},
-    {"name": "Taunt the Caged Beast"}
+    {"name": "Feral Whispers", "level": 1, "poolFactors": ["Manipulation", "Animal Ken"], "description": "", "book": "V20", "page": 129},
+    {"name": "Beckoning", "level": 2, "poolFactors": ["Charisma", "Survival"], "description": "", "book": "V20", "page": 130},
+    {"name": "Quell the Beast", "level": 3, "poolFactors": [["Manipulation", "Intimidation"], ["Manipulation", "Empathy"]], "description": "", "book": "V20", "page": 130},
+    {"name": "Subsume the Spirit", "level": 4, "poolFactors": ["Manipulation", "Animal Ken"], "description": "", "book": "V20", "page": 131},
+    {"name": "Drawing out the Beast", "level": 5, "poolFactors": [["Manupluation", "Self-Control"],["Manipulation", "Instinct"]], "description": "", "book": "V20", "page": 132},
+    {"name": "Animal Succulence", "level": 6, "poolFactors": null, "description": "", "book": "V20", "page": 133},
+    {"name": "Shared Soul", "level": 6, "poolFactors":["Perception", "Animal Ken"], "description": "", "book": "V20", "page": 133},
+    {"name": "Species Speech", "level": 6, "poolFactors": ["Manipulation", "Animal Ken"], "description": "", "book": "V20", "page": 133},
+    {"name": "Conquer the Beast", "level": 7, "poolFactors": ["Willpower"], "description": "", "book": "V20", "page": 133},
+    {"name": "Taunt the Caged Beast", "level": 8, "poolFactors": ["Manipulation", "Empathy"], "resistance": [["Self-Control"],["Instinct"]], "description": "", "book": "V20", "page": 133},
+    {"name": "Unchain the Beast", "level":8, "poolFactors": ["Manipulation", "Intimidation"], "description": "", "book": "V20", "page": 134}
   ]
 }

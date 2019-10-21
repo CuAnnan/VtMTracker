@@ -1,0 +1,10 @@
+{
+  "name": "Auspex",
+  "powers": [
+    {"name": "Heightened Senses", "level": 1, "poolFactors": null, "description": "", "book": "V20", "page": 134},
+    {"name": "Aura Perception", "level": 2, "poolFactors": ["Perception","Empathy"], "description": "", "book": "V20", "page": 135},
+    {"name": "The Spirit's Touch", "level": 3, "poolFactors": ["Perception", "Empathy"], "description": "", "book": "V20", "page": 136},
+    {"name": "Telepathy", "level": 4, "poolFactors": ["Intelligence", "Subterfuge"], "description": "", "book": "V20", "page": 137},
+    {"name": "Psychic Projection", "level": 5, "poolFactors": ["Perception", "Awareness"], "description": "", "book": "V20", "page": 138}
+  ]
+}

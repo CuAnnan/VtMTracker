@@ -1,0 +1,19 @@
+module.exports = {
+    'Animalism':require('./Animalism'),
+    'Auspex':null,
+    'Celerity':null,
+    'Chimestry':null,
+    'Dementation':null,
+    'Dominate':null,
+    'Fortitude':null,
+    'Koldunism':null,
+    'Necromancy':null,
+    'Obfuscate':null,
+    'Obtenebration':null,
+    'Presence':null,
+    'Potence':null,
+    'Queitus':null,
+    'Serpentis':null,
+    'Thaumaturgy':null,
+    'Vicissitude':null
+};
