@@ -5,12 +5,14 @@
     <div class="col">Character link</div>
     <div class="col">Build history</div>
     <div class="col">Checkout command</div>
+    <div class="col">Dice Roller</div>
 </div>
 <% for(let character of characters) { %>
     <div class="row">
         <div class="col"><a href="/characters/view/<%- character.reference%>"><%= character.name%></a></div>
         <div class="col"><a href="/characters/history/<%- character.reference%>">Build history</a></div>
         <div class="col"><pre>!checkout <%- character.reference %></pre></div>
+        <div class="col"><a href="/dieRoller/<%- character.reference%>">Dice Roller</a></div>
     </div>
 <% } %>
 

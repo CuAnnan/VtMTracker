@@ -30,7 +30,7 @@ const   Attribute = require('./Attribute'),
         Ability = require('./Ability'),
         Road = require('./Road'),
         Virtue = require('./Virtue'),
-        Discipline = require('./Discipline'),
+        {Discipline, DisciplinePower} = require('./Discipline'),
         XPPurchasable = require('./XPPurchasable'),
         Spendable = require('./Spendable'),
         attributes = {
@@ -123,7 +123,22 @@ class Character
 
     addDiscipline(discipline)
     {
+        if(!this.disciplines[discipline.name])
+        {
+            this.disciplines[discipline.name] = discipline;
+        }
+        return this;
+    }
 
+    removeDiscipline(discipline)
+    {
+        delete this.disciplines[discipline.name];
+    }
+
+
+    getDisciplineByName(disciplineName)
+    {
+        return this.disciplines[disciplineName];
     }
 
     toJSON()
@@ -137,7 +152,15 @@ class Character
             courage:this.courage,
             bloodpool:this.bloodpool,
             willpower:this.willpower,
+            disciplines:[],
         };
+        for(let discipline of Object.values(this.disciplines))
+        {
+            if(discipline.level)
+            {
+                json.disciplines.push(discipline.toJSON());
+            }
+        }
         if(this.road)
         {
             json.road = this.road;
@@ -189,7 +212,7 @@ const XPPurchasable = require('./XPPurchasable');
 
 class DisciplinePower
 {
-    constructor(name, poolFactors, level, cost, learned)
+    constructor(name, poolFactors, level, cost)
     {
         this.name = name;
         this.poolFactors = poolFactors;
@@ -215,9 +238,10 @@ class DisciplinePower
 
 class Discipline extends XPPurchasable
 {
-    constructor(name)
+    constructor(name, bought)
     {
         super(name, 0);
+        this.bought = bought;
         this.powers = {};
     }
 
@@ -225,11 +249,16 @@ class Discipline extends XPPurchasable
     {
         let json = super.toJSON();
         json.powers = [];
-        for(let powerList of Object.values(this.powers))
+        let powers = Object.values(this.powers);
+        for(let i = 0; i < this.level; i++)
         {
-            for(let power of powerList)
+            let powerList = powers[i];
+            if(powerList)
             {
-                json.powers.push(power.toJSON());
+                for (let power of powerList)
+                {
+                    json.powers.push(power.toJSON());
+                }
             }
         }
         return json;
@@ -240,17 +269,13 @@ class Discipline extends XPPurchasable
         if(!this.powers[power.level])
         {
             this.powers[power.level] = [];
-            if(power.bought && power.level > this.bought)
-            {
-                this.bought = power.level;
-            }
         }
         this.powers[power.level].push(power);
     }
 
     static fromJSON(json)
     {
-        let discipline = new Discipline(json.name);
+        let discipline = new Discipline(json.name, json.bought);
         for(let power of json.powers)
         {
             discipline.addPower(DisciplinePower.fromJSON(power));
@@ -260,7 +285,7 @@ class Discipline extends XPPurchasable
 
 }
 
-module.exports = Discipline;
+module.exports = {Discipline:Discipline, DisciplinePower:DisciplinePower};
 },{"./XPPurchasable":8}],5:[function(require,module,exports){
 const   roadsData = require('./roadsData'),
         XPPurchasable = require('./XPPurchasable'),
@@ -481,13 +506,21 @@ class XPPurchasableWithSpeciality extends XPPurchasable
 module.exports = XPPurchasableWithSpeciality;
 },{"./XPPurchasable":8}],10:[function(require,module,exports){
 const   Character = require('./Character'),
+        {Discipline, DisciplinePower} = require('./Discipline'),
         Road = require('./Road');
 (($)=>{
     /**
      * @type {Character}
      */
     let toon = null,
-        $disciplineLabel = $('#disciplineMenuLabel');
+        $disciplineLabel = $('#disciplineMenuLabel'),
+        $disciplineName = $('#disciplineName'),
+        $disciplineList = $('#disciplineList'),
+        $disciplineRow = $('#disciplineRow'),
+        /**
+         * @type {Discipline}
+         */
+        currentDiscipline = null;
 
     function setPurchasableLevel()
     {
@@ -579,14 +612,99 @@ const   Character = require('./Character'),
 
     function showDisciplineUI()
     {
+        $disciplineRow.hide();
         $('#disciplineModal').modal('show');
     }
 
     function chooseDiscipline()
     {
         let $link = $(this),
-            discipline = $link.data('disciplineName');
-        $disciplineLabel.text(discipline);
+            disciplineName = $link.data('disciplineName');
+        $disciplineLabel.text(disciplineName);
+        $disciplineName.text(disciplineName);
+        $disciplineRow.show();
+
+        let discipline = toon.getDisciplineByName(disciplineName);
+        if(!discipline)
+        {
+            try
+            {
+                discipline = Discipline.fromJSON(disciplineJSON[disciplineName]);
+            }
+            catch(e)
+            {
+                discipline = new Discipline(disciplineName);
+            }
+            toon.addDiscipline(discipline);
+        }
+        currentDiscipline = discipline;
+        updateDisciplineDots();
+    }
+
+    function updateDisciplineDots()
+    {
+        $('.disciplineLevel').removeClass('fas').addClass('far');
+        $(`.disciplineLevel:lt(${currentDiscipline.level})`).removeClass('far').addClass('fas');
+    }
+
+    function setDisciplineLevel()
+    {
+        let $span = $(this),
+            level = $span.data('level');
+        let changeData = {name:currentDiscipline.name, oldLevel:currentDiscipline.level};
+        currentDiscipline.level = (level === currentDiscipline.level)?level-1:level;
+        changeData.newLevel = currentDiscipline.level;
+        updateDisciplineDots();
+        saveCharacter(changeData);
+    }
+
+    function updateDisciplineList()
+    {
+        $disciplineList.empty();
+        let characterDisciplines = Object.values(toon.disciplines);
+        for(let discipline of characterDisciplines)
+        {
+            if(discipline.level)
+            {
+                let html = `<div class="row"><div class="col-5">${discipline.name}</div><div class="col">`;
+
+                for(let i = 0; i < 9; i++)
+                {
+                    html += `<span class="inlineDisciplineLevelSpan" data-level="${i+1}"><i class="inlineDisciplineLevel fa-circle ${i<discipline.level?'fas':'far'}"></i></span>`;
+                }
+                html += '</div></div>';
+                $(html).appendTo($disciplineList).data('disciplineName', discipline.name);
+            }
+            else
+            {
+                toon.removeDiscipline(discipline);
+            }
+        }
+        $('.inlineDisciplineLevelSpan').click(setInlineDisciplineLevel);
+    }
+
+    function setInlineDisciplineLevel()
+    {
+        let $span = $(this),
+            $row = $span.closest('.row'),
+            $col = $span.closest('.col'),
+            level = parseInt($span.data('level')),
+            data = $row.data();
+        let discipline = toon.getDisciplineByName(data.disciplineName);
+        let changeData = {name:discipline.name, oldLevel:discipline.level};
+        discipline.level = level === discipline.level?level - 1:level;
+        changeData.newLevel = discipline.level;
+        $('.inlineDisciplineLevel', $col).removeClass('far fas');
+        if(discipline.level)
+        {
+            $(`.inlineDisciplineLevel:lt(${discipline.level})`, $col).addClass('fas');
+            $(`.inlineDisciplineLevel:gt(${discipline.level - 1})`, $col).addClass('far');
+        }
+        else
+        {
+            $('.inlineDisciplineLevel', $col).addClass('far');
+        }
+        saveCharacter(changeData);
     }
 
     function loadDisciplineUI()
@@ -602,16 +720,20 @@ const   Character = require('./Character'),
     }
 
 
+
     $(()=> {
         window.toon = toon = Character.fromJSON(rawCharacterJSON);
         loadDisciplineUI();
         $('.simplePurchasable').click(setPurchasableLevel);
+        $('.disciplineLevelContainer').click(setDisciplineLevel);
         $('#disciplineHR').click(showDisciplineUI);
+        $('#disciplineModal').on('hide.bs.modal', updateDisciplineList);
+        $('.inlineDisciplineLevelSpan').click(setInlineDisciplineLevel);
         let $roadsSelect = $('#roadsSelect').change(setRoad);
     });
 
 })(window.jQuery);
-},{"./Character":3,"./Road":5}],11:[function(require,module,exports){
+},{"./Character":3,"./Discipline":4,"./Road":5}],11:[function(require,module,exports){
 let roads = [
     ['Beast', 'Conviction', 'Instinct', 'Menace'],
     ['Hunter', 'Conviction', 'Instinct', 'Menace'],

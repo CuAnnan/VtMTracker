@@ -28,9 +28,10 @@ class DisciplinePower
 
 class Discipline extends XPPurchasable
 {
-    constructor(name)
+    constructor(name, bought)
     {
         super(name, 0);
+        this.bought = bought;
         this.powers = {};
     }
 
@@ -38,11 +39,16 @@ class Discipline extends XPPurchasable
     {
         let json = super.toJSON();
         json.powers = [];
-        for(let powerList of Object.values(this.powers))
+        let powers = Object.values(this.powers);
+        for(let i = 0; i < this.level; i++)
         {
-            for(let power of powerList)
+            let powerList = powers[i];
+            if(powerList)
             {
-                json.powers.push(power.toJSON());
+                for (let power of powerList)
+                {
+                    json.powers.push(power.toJSON());
+                }
             }
         }
         return json;
@@ -53,17 +59,13 @@ class Discipline extends XPPurchasable
         if(!this.powers[power.level])
         {
             this.powers[power.level] = [];
-            if(power.bought && power.level > this.bought)
-            {
-                this.bought = power.level;
-            }
         }
         this.powers[power.level].push(power);
     }
 
     static fromJSON(json)
     {
-        let discipline = new Discipline(json.name);
+        let discipline = new Discipline(json.name, json.bought);
         for(let power of json.powers)
         {
             discipline.addPower(DisciplinePower.fromJSON(power));

@@ -102,20 +102,15 @@ class Character
         return this;
     }
 
-    /**
-     * @param {Discipline} discipline
-     * @param {DisciplinePower} disciplinePower
-     * @returns {Character}
-     */
-    addDisciplinePower(discipline, disciplinePower)
+    removeDiscipline(discipline)
     {
-        if(!this.disciplines[discipline.name])
-        {
-            this.addDiscipline(discipline);
-        }
-        this.disciplines[discipline.name].addPower(disciplinePower);
+        delete this.disciplines[discipline.name];
+    }
 
-        return this;
+
+    getDisciplineByName(disciplineName)
+    {
+        return this.disciplines[disciplineName];
     }
 
     toJSON()
@@ -129,7 +124,15 @@ class Character
             courage:this.courage,
             bloodpool:this.bloodpool,
             willpower:this.willpower,
+            disciplines:[],
         };
+        for(let discipline of Object.values(this.disciplines))
+        {
+            if(discipline.level)
+            {
+                json.disciplines.push(discipline.toJSON());
+            }
+        }
         if(this.road)
         {
             json.road = this.road;

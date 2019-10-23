@@ -72,13 +72,12 @@ class CharacterController extends Controller
         {
             let character = await this.fetchCharacterEntity(req, req.body.reference, true);
             character.json = JSON.parse(req.body.json);
-            await character.save();
 
+            await character.save();
             await CharacterUpdateSchema.create({
                 character:character,
                 update:JSON.parse(req.body.changeData)
             });
-
             await res.json({
                 success:true
             });

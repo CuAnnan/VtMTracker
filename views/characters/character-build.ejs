@@ -66,16 +66,7 @@
                 <div class="row" data-attribute-name="<%= attribute.name%>">
                     <div class="col-5"><%= attribute.name%></div>
                     <div class="col" data-purchasable="<%= attribute.name.toLowerCase() %>">
-                        <% for (let level = 0; level < attribute.level; level++) { %>
-                            <span class="attribute-level simplePurchasable" data-level="<%= level + 1%>">
-                                <i class="fas fa-circle"></i>
-                            </span>
-                        <% } %>
-                        <% for(let level = attribute.level; level < 9; level++){%>
-                            <span class="attribute-level simplePurchasable" data-level="<%= level + 1%>">
-                                <i class="far fa-circle"></i>
-                            </span>
-                        <% }%>
+                        <% for (let i = 0; i < 10; i++) { %><span class="attribute-level simplePurchasable" data-level="<%= i + 1%>"><i class="<%- i < attribute.level? 'fas':'far'%> fa-circle"></i></span><% } %>
                     </div>
                 </div>
             <% }%>
@@ -96,16 +87,7 @@
                     <div class="row">
                         <div class="col-5"><%= ability.name %></div>
                         <div class="col" data-purchasable="<%= ability.name.toLowerCase() %>">
-                            <% for (let level = 0; level < ability.level; level++) { %>
-                                <span class="ability-level simplePurchasable" data-level="<%= level + 1%>">
-                                    <i class="fas fa-circle"></i>
-                                </span>
-                            <% } %>
-                            <% for(let level = ability.level; level < 9; level++){%>
-                                <span class="ability-level simplePurchasable" data-level="<%= level + 1%>">
-                                    <i class="far fa-circle"></i>
-                                </span>
-                            <% }%>
+                            <% for (let i = 0; i < 10; i++) { %><span class="ability-level simplePurchasable" data-level="<%= i+1 %>"><i class="<%- i<ability.level?'fas':'far'%> fa-circle"></i></span><% } %>
                         </div>
                     </div>
                 <%}%>
@@ -118,7 +100,19 @@
     </div></div>
     <div class="row">
         <div class="col">
-            <hr class="hr-text hr-medium" data-content="Disciplines" style="cursor:pointer" id="disciplineHR"/>
+            <div class="row">
+                <hr class="hr-text hr-medium" data-content="Disciplines" style="cursor:pointer" id="disciplineHR"/>
+            </div>
+            <div class="row"><div class="col" id="disciplineList">
+                <% for(let discipline of Object.values(character.disciplines)){%>
+                    <div class="row" data-discipline-name="<%- discipline.name%>">
+                        <div class="col-5"><%- discipline.name%></div>
+                        <div class="col">
+                            <% for(let i = 0; i < 9; i++){%><span class="inlineDisciplineLevelSpan" data-level="<%= i+1 %>"><i class="inlineDisciplineLevel fa-circle <%- i<discipline.level?'fas':'far'%>"></i></span><% } %>
+                        </div>
+                    </div>
+                <% } %>
+            </div></div>
         </div>
         <div class="col">
             <hr class="hr-text hr-medium" data-content="Backgrounds"/>
@@ -135,22 +129,10 @@
                 </div>
                 <div class="col col-5" data-purchasable="virtue1">
                     <% if(character.road){%>
-                        <%for(let i = 0; i < character.road.virtue1.level; i++){%>
-                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                                <i class="fas fa-circle"></i>
-                            </span>
-                        <%}%>
-                        <%for(let i = character.road.virtue1.level; i < 5; i++){%>
-                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                                <i class="far fa-circle"></i>
-                            </span>
-                        <%}%>
-                        <%}else{%>
-                        <%for(let i = 1; i <= 5; i++){%>
-                            <span class="ability-level simplePurchasable" data-level="<%= i %>">
-                                <i class="far fa-circle"></i>
-                            </span>
-                        <%}%>
+                        <%for(let i = 0; i < character.road.virtue1.level; i++){%><span class="ability-level simplePurchasable" data-level="<%= i+1 %>"><i class="fas fa-circle"></i></span><%}%>
+                        <%for(let i = character.road.virtue1.level; i < 5; i++){%><span class="ability-level simplePurchasable" data-level="<%= i+1 %>"><i class="far fa-circle"></i></span><%}%>
+                    <%}else{%>
+                        <%for(let i = 1; i <= 5; i++){%><span class="ability-level simplePurchasable" data-level="<%= i %>"></span><%}%>
                     <%}%>
                 </div>
             </div>
@@ -164,38 +146,17 @@
                 </div>
                 <div class="col col-5" data-purchasable="virtue2">
                     <% if(character.road){%>
-                        <%for(let i = 0; i < character.road.virtue2.level; i++){%>
-                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                                <i class="fas fa-circle"></i>
-                            </span>
-                        <%}%>
-                        <%for(let i = character.road.virtue2.level; i < 5; i++){%>
-                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                                <i class="far fa-circle"></i>
-                            </span>
-                        <%}%>
+                        <%for(let i = 0; i < character.road.virtue2.level; i++){%><span class="ability-level simplePurchasable" data-level="<%= i+1 %>"><i class="fas fa-circle"></i></span><%}%>
+                        <%for(let i = character.road.virtue2.level; i < 5; i++){%><span class="ability-level simplePurchasable" data-level="<%= i+1 %>"><i class="far fa-circle"></i></span><%}%>
                     <%}else{%>
-                        <%for(let i = 1; i <= 5; i++){%>
-                            <span class="ability-level simplePurchasable" data-level="<%= i %>">
-                                <i class="far fa-circle"></i>
-                            </span>
-                        <%}%>
+                        <%for(let i = 1; i <= 5; i++){%><span class="ability-level simplePurchasable" data-level="<%= i %>"><i class="far fa-circle"></i></span><%}%>
                     <%}%>
                 </div>
             </div>
             <div class="row">
                 <div class="col">Courage</div>
                 <div class="col col-5" data-purchasable="courage">
-                    <%for(let i = 0; i < character.courage.level; i++){%>
-                        <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                            <i class="fas fa-circle"></i>
-                        </span>
-                    <%}%>
-                    <%for(let i = character.courage.level; i < 5; i++){%>
-                        <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                            <i class="far fa-circle"></i>
-                        </span>
-                    <%}%>
+                    <%for(let i = 0; i < 5; i++){%><span class="ability-level simplePurchasable" data-level="<%= i+1 %>"><i class="<%- i<character.courage.level?'fas':'far'%> fa-circle"></i></span><%}%>
                 </div>
             </div>
         </div>
@@ -304,14 +265,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
+                    <div class="row" id="disciplineRow" style="display:none">
                         <div class="col" id="disciplineName"></div>
-                        <div class="col" id="disciplineLevel" data-purchasable="null">
-                            <span class="ability-level simplePurchasable" data-level="<%= i+1 %>">
-                                <%for(let i = 0; i < 10; i++){%>
-                                    <i class="far fa-circle"></i>
-                                <%}%>
-                            </span>
+                        <div class="col" id="disciplineLevels" data-purchasable="null">
+                            <%for(let i = 0; i < 10; i++){%>
+                                <span class="disciplineLevelContainer" data-level="<%= i+1 %>">
+                                    <i class="disciplineLevel far fa-circle"></i>
+                                </span>
+                            <%}%>
                         </div>
                     </div>
                 </div>
