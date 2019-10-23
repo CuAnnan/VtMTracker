@@ -133,7 +133,8 @@ class Action
             return this;
         }
 
-        let hasOnes = false;
+        let hasOnes = false,
+            hasAnySuccesses = false;
 
         for (let i = 0; i < this.pool; i++)
         {
@@ -143,6 +144,10 @@ class Action
                 hasOnes = true;
             }
             this.diceValues.push(die.result);
+            if(this.successes > 0)
+            {
+                hasAnySuccesses = true;
+            }
             this.successes += die.successes;
             this.dice.push(die);
         }
@@ -153,12 +158,13 @@ class Action
             {
                 this.successes = 0;
             }
+            hasAnySuccesses = true;
             this.successes++;
         }
 
         this.successes = Math.max(this.successes, 0);
 
-        if(this.successes === 0 && hasOnes)
+        if(!hasAnySuccesses && hasOnes)
         {
             this.botch = true;
         }
