@@ -8,6 +8,15 @@ class Ability extends XPPurchasableWithSpecialty
         this.unskilledPenalty = unskilledPenalty;
     }
 
+    get penalty()
+    {
+        if(this.level)
+        {
+            return 0;
+        }
+        return this.unskilledPenalty;
+    }
+
 }
 
 module.exports = Ability;

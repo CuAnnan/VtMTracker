@@ -1,7 +1,7 @@
 module.exports = {
     'Animalism':require('./Animalism'),
-    'Auspex':null,
-    'Celerity':null,
+    'Auspex':require('./Auspex'),
+    'Celerity':require('./Celerity'),
     'Chimestry':null,
     'Dementation':null,
     'Dominate':null,

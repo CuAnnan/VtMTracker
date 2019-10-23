@@ -146,6 +146,13 @@ class CharacterController extends Controller
         return null;
     }
 
+    async viewDiceRoller(req, res)
+    {
+        let character = await this.fetchCharacterEntity(req, req.params.reference);
+        res.render('characters/dice-roller', {character:character});
+        return null;
+    }
+
     async aboutAction(req, res)
     {
         res.render('characters/about');

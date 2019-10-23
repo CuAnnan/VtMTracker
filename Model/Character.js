@@ -39,6 +39,7 @@ class Character
         this.lookups = {};
         this.abilities = {};
         this.unsortedAbilities = [];
+
         for(let useGroup in attributes)
         {
             this.attributes[useGroup] = [];
@@ -48,6 +49,7 @@ class Character
                 this.attributes[useGroup].push(attribute);
                 this.unsortedAttributes.push(attribute);
                 this.lookups[attributeName.toLowerCase()] = attribute;
+
             }
         }
         for(let useGroup in abilities)
@@ -98,7 +100,9 @@ class Character
         if(!this.disciplines[discipline.name])
         {
             this.disciplines[discipline.name] = discipline;
+            this.lookups[discipline.name.toLowerCase()] = discipline;
         }
+
         return this;
     }
 

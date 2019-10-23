@@ -1,0 +1,143 @@
+<%- include ../inc/header.ejs %>
+<script type="text/javascript">
+    var characterJSON = <%- JSON.stringify(character.toJSON()) %>;
+</script>
+<script type="text/javascript" src="/js/diceRoller.js"></script>
+<div class="row">
+    <div class="col-12 col-lg-6">
+        <form onsubmit="return false;">
+            <h2 class="row">Dice pool information</h2>
+            <div class="form-group row">
+                <div class="col-sm-2">
+                    Pool:
+                </div>
+                <div class="col-sm" id="poolContributions"></div>
+                <div class="col-sm-3 text-right">
+                    <button id="poolButton" class="btn-sm btn-primary">
+                        <i class="fas fa-tools"></i>Edit Pool
+                    </button>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="dice-pool" class="col-sm-2 col-form-label">Pool</label>
+                <div class="col-sm-10">
+                    <input id="dice-pool" class="form-control" type="number" min="0" value="5" pattern="\d*"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="difficulty" class="col-sm-2 col-form-label">Difficulty</label>
+                <div class="col-sm-10">
+                    <input id="difficulty" class="form-control" type="number" min="2" max="10" value="6" pattern="\d*"/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-2">Specialty</div>
+                <div class="col-sm-10">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary">
+                            <input class="form-check-input" type="radio" name="specialty" id="specialty1" value="yes" autocomplete="off"/> Yes
+                        </label>
+                        <label class="btn btn-secondary active">
+                            <input class="form-check-input" type="radio" checked="checked" name="specialty" id="specialty2" value="no" autocomplete="off"/>No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-2">Willpower</div>
+                <div class="col-sm-10">
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-secondary">
+                            <input class="form-check-input" type="radio" name="willpower" id="willpower1" value="yes" autocomplete="off"/> Yes
+                        </label>
+                        <label class="btn btn-secondary active">
+                            <input class="form-check-input" type="radio" checked="checked" name="willpower" id="willpower2" value="no"  autocomplete="off"/> No
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <button class="btn btn-primary" id="roll-button">Roll</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-12 col-lg-6">
+        <h2 class="row">Results</h2>
+        <div class="row" id="successes-row">
+            <div class="col">Successes:</div>
+            <div class="col" id="result-successes"></div>
+        </div>
+        <div class="row" id="botch-row" style="display:none">
+            <div class="col text-center" style="font-weight: bold">Botch!!</div>
+        </div>
+        <div class="row">
+            <div class="col">Specialty:</div>
+            <div class="col" id="result-specialty"></div>
+        </div>
+        <div class="row">
+            <div class="col">Willpower:</div>
+            <div class="col" id="result-willpower"></div>
+        </div>
+        <div class="row">
+            <div class="col">Rolls:</div>
+            <div class="col" id="result-rolls"></div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="poolModal">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Dice Pool
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="container">
+                    <h2 class="row">Traits:</h2>
+                    <div class="row">
+                        <div class="col-3">
+                            <select id="attributeSelect" class="poolFactor form-control" autocomplete="off">
+                                <option value="">Attribute</option>
+                                <%for (let purchasable of character.unsortedAttributes){%>
+                                    <option value="<%-purchasable.name%>"><%- purchasable.name%> (<%- purchasable.level %>)</option>
+                                <% }%>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <select id="skillSelect" class="poolFactor form-control" autocomplete="off">
+                                <option value="">Ability</option>
+                                <%for(let purchasable of character.unsortedAbilities){%>
+                                    <option value="<%-purchasable.name%>"><%- purchasable.name %> (<%- purchasable.level%>)</option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <select id="disciplineSelect" class="poolFactor form-control" autocomplete="off">
+                                <option value="">Discipline</option>
+                                <%for(let purchasable of Object.values(character.disciplines)){%>
+                                    <option value="<%-purchasable.name%>"><%- purchasable.name %> (<%- purchasable.level %>)</option>
+                                <%}%>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <input type="number" id="poolAddition" min="0" max="10" class="poolFactor form-control" autocomplete="off"/>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col" id="addedPoolFactors">
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">Total:</div>
+                        <div class="col" id="poolTotal"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include ../inc/footer.ejs %>

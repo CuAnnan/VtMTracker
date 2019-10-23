@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build": "browserify ./Model/build.js >  ./public/js/frontEndBuild.js"
+    "build": "browserify ./Model/build.js >  ./public/js/frontEndBuild.js",
+    "buildDiceRoller": "browserify ./Model/diceRoller.js > ./public/js/diceRoller.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
