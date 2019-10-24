@@ -1,5 +1,8 @@
 {
   "name": "Celerity",
+  "description": "Each point of Celerity adds one die to every Dexterity-related dice roll. In addition, the player can spend one blood point to take an extra action up to the number of dots he has in Celerity at the beginning of the relevant turn; this expenditure can go beyond her normal Generation maximum. Any dots used for extra actions, however, are no longer available for Dexterity- related rolls during that turn. These additional actions must be physical (e.g., the vampire cannot use a mental Discipline like Dominate multiple times in one turn), and extra actions occur at the end of the turn (the vampire’s regular action still takes place per her initiative roll).",
+  "book": "V20",
+  "page": 142,
   "powers": [
 
   ]

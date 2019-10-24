@@ -1,5 +1,8 @@
 {
   "name": "Animalism",
+  "description": "",
+  "book": "V20",
+  "page": 129,
   "powers": [
     {"name": "Feral Whispers", "level": 1, "poolFactors": ["Manipulation", "Animal Ken"], "description": "", "book": "V20", "page": 129},
     {"name": "Beckoning", "level": 2, "poolFactors": ["Charisma", "Survival"], "description": "", "book": "V20", "page": 130},

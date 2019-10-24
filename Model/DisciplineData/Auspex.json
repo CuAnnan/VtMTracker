@@ -1,5 +1,7 @@
 {
   "name": "Auspex",
+  "description": "",
+  "book": "V20", "page": 134,
   "powers": [
     {"name": "Heightened Senses", "level": 1, "poolFactors": null, "description": "", "book": "V20", "page": 134},
     {"name": "Aura Perception", "level": 2, "poolFactors": ["Perception","Empathy"], "description": "", "book": "V20", "page": 135},
