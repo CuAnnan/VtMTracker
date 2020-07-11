@@ -31,6 +31,9 @@ class Character
         this.clan = clan;
         this.reference = reference;
 
+        this.nature = null;
+        this.demeanour = null;
+
         this.willpower = new Spendable('Willpower', 0);
         this.bloodpool = new Spendable('Bloodpool', 0);
 
@@ -71,6 +74,7 @@ class Character
         this.lookups.bloodpool = this.bloodpool;
         this.lookups.willpower = this.willpower;
     }
+
 
     set road(road)
     {
@@ -122,6 +126,8 @@ class Character
         let json = {
             name:this.name,
             clan:this.clan,
+            demeanour:this.demeanour,
+            nature:this.nature,
             reference:this.reference,
             abilities:this.unsortedAbilities,
             attributes:this.unsortedAttributes,
@@ -150,6 +156,14 @@ class Character
         if (json.road) {
             let road = Road.fromJSON(json.road);
             character.road = road;
+        }
+        if(json.demeanour)
+        {
+            character.demeanour = json.demeanour;
+        }
+        if(json.nature)
+        {
+            character.nature = json.nature;
         }
         if(json.courage)
         {

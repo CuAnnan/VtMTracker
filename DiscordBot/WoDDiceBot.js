@@ -46,7 +46,7 @@ class WoDDiceBot extends DiscordBot
             difficultyMatch = messageText.match(/diff\-(\d+)/),
             specialty = messageText.indexOf('spec')>-1;
         return {
-            difficulty:difficultyMatch?difficultyMatch:difficulty,
+            difficulty:difficultyMatch?difficultyMatch[1]:difficulty,
             specialty:specialty,
             willpower:willpower
         }
@@ -56,14 +56,13 @@ class WoDDiceBot extends DiscordBot
     {
         let messageText = message.content.toLowerCase(),
             poolMatch = messageText.match(/\s(\d+)\s?/),
-            {difficulty, specialty, willpower} = this.preParseRoll(messageText),
+            parsedRollText = this.preParseRoll(messageText),
+            {difficulty, specialty, willpower} = parsedRollText,
             pool = 5;
-
         if(poolMatch)
         {
             pool = parseInt(poolMatch[1]);
         }
-
         let action = new Action(pool, difficulty, specialty, willpower);
         let results = action.getResults();
         this.displayResults(message, results, comment);

@@ -25,8 +25,9 @@ class Die
         }
         else if(this.result >= this.difficulty)
         {
-            this.successes = (this.result == 10 && this.specialty)?2:1;
+            this.successes = 1;
         }
+
         this.rolled = true;
         return this;
     }
@@ -134,9 +135,9 @@ class Action
         }
 
         let hasOnes = false,
-            hasAnySuccesses = false;
-
-        for (let i = 0; i < this.pool; i++)
+            hasAnySuccesses = false,
+            diceRolled = 0;
+        while(diceRolled < this.pool)
         {
             let die = new Die(this.difficulty, this.specialty).roll();
             if (die.result === 1)
@@ -150,6 +151,10 @@ class Action
             }
             this.successes += die.successes;
             this.dice.push(die);
+            if(die.result !== 10)
+            {
+                diceRolled ++;
+            }
         }
 
         if (this.willpower)
