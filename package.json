@@ -27,7 +27,7 @@
     "sendmail": "^1.6.1",
     "shortid": "^2.2.15",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v15.11.0",
-    "ws": "^7.1.2"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "browserify": "^16.5.0"
