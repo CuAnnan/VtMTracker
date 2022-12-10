@@ -15,7 +15,7 @@
     "debug": "^2.6.9",
     "discord.js": "^11.5.1",
     "ejs": "^2.6.2",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-session": "^1.16.2",
     "extensiblediscordbot": "git+https://github.com/CuAnnan/DiscordBot.git",
     "http-errors": "^1.6.3",
